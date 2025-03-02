@@ -4,34 +4,40 @@ from edge import Edge
 from colors import Color
 
 class Cube:
-    def __init__(self, x, y, z, a, PointsColor=Color.WHITE.value, EdgesColor=Color.WHITE.value):
-        self.x = x
-        self.y = y
-        self.z = z
-        self.a = a
+    def __init__(self, center: Point3d, diameter: float, surface, PointsColor=Color.BLACK.value, EdgesColor=Color.GREEN.value):
+        self.center = center
+        self.diameter = diameter
+        self.surface = surface
         self.PointsColor = PointsColor
         self.EdgesColor = EdgesColor
-    
+        self.vertices = self.GetPoints()
+        self.edges = self.GetEdges()
+
     def GetPoints(self):
         return [
-            Point3d(self.x - self.a / 2, self.y - self.a / 2, self.z - (self.a / 2), self.PointsColor),
-            Point3d(self.x - self.a / 2, self.y + self.a / 2, self.z - (self.a / 2), self.PointsColor),
-            Point3d(self.x + self.a / 2, self.y - self.a / 2, self.z - (self.a / 2), self.PointsColor),
-            Point3d(self.x + self.a / 2, self.y + self.a / 2, self.z - (self.a / 2), self.PointsColor),
-            Point3d(self.x - self.a / 2, self.y - self.a / 2, self.z + (self.a / 2), self.PointsColor),
-            Point3d(self.x - self.a / 2, self.y + self.a / 2, self.z + (self.a / 2), self.PointsColor),
-            Point3d(self.x + self.a / 2, self.y - self.a / 2, self.z + (self.a / 2), self.PointsColor),
-            Point3d(self.x + self.a / 2, self.y + self.a / 2, self.z + (self.a / 2), self.PointsColor),
+            Point3d(self.center.x - self.diameter / 2, self.center.y - self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x - self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
         ]
 
     def GetEdges(self):
-        vertices = self.GetPoints()
         edges = []
         for i in range(4):
             j = i + 1
             k = j % 4
             l = i + 4
-            edges.append(Edge(vertices[i], vertices[k], self.EdgesColor))
-            edges.append(Edge(vertices[l], vertices[k + 4], self.EdgesColor))
-            edges.append(Edge(vertices[i], vertices[l], self.EdgesColor))
-        pass
+            edges.append(Edge(self.vertices[i], self.vertices[k], self.EdgesColor))
+            edges.append(Edge(self.vertices[l], self.vertices[k + 4], self.EdgesColor))
+            edges.append(Edge(self.vertices[i], self.vertices[l], self.EdgesColor))
+        return edges
+
+    def draw(self):
+        for vertice in self.vertices:
+            vertice.draw(self.surface)
+        for edge in self.edges:
+            edge.draw(self.surface)

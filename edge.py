@@ -8,5 +8,5 @@ class Edge:
         self.end = (point2.x, point2.y)
         self.EdgeColor = EdgeColor
 
-    def draw(self, surface, width=1):
+    def draw(self, surface, width=10):
         pygame.draw.line(surface, self.EdgeColor, self.start, self.end, width)
