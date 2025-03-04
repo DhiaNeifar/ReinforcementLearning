@@ -27,7 +27,7 @@ class Point3d:
         :return: numpy array representing the coordinates of the Point3d.
         """
 
-        return np.array([self.x, self.y, self.z, 1], dtype=np.float16)
+        return np.array([self.x, self.y, self.z], dtype=np.float16)
 
 
     def draw(self, surface, width=5) -> None:

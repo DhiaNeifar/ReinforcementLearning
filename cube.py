@@ -1,7 +1,7 @@
 import numpy as np
 from typing import List
 
-from config import Translate, Project, Scale
+from config import Translate, Project, Scale, Rotate, Pad
 from point import Point3d
 from edge import Edge
 from colors import Color
@@ -9,7 +9,7 @@ from colors import Color
 
 class Cube:
     def __init__(self, surface, center: Point3d=Point3d(0, 0, 0),
-                 diameter: float=2,
+                 diameter: float=1,
                  VerticesColor=Color.BLACK.value,
                  EdgesColor=Color.GREEN.value) -> None:
         """
@@ -25,6 +25,7 @@ class Cube:
         self.center = center
         self.diameter = diameter
         self.surface = surface
+        self.rotation = [0, 0, 0]
         self.VerticesColor = VerticesColor
         self.EdgesColor = EdgesColor
 
@@ -73,7 +74,9 @@ class Cube:
         """
 
         Coordinates = self.to_numpy()
-        ZTranslatedCube = Translate(Coordinates, Tx=0.0, Ty=0.0, Tz=3.0)
+        RotatedCube = Rotate(Coordinates, *self.rotation)
+        PaddedCube = Pad(RotatedCube)
+        ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=3.0)
         ProjectedCube = Project(ZTranslatedCube)
         ScaledCube = Scale(ProjectedCube)
         return ScaledCube
@@ -106,3 +109,7 @@ class Cube:
             edge.draw(self.surface)
         for vertice in Vertices:
             vertice.draw(self.surface)
+
+    def update(self):
+        for i in range(3):
+            self.rotation[i] += 0.01

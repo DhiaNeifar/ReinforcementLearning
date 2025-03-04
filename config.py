@@ -71,3 +71,29 @@ def Scale(Matrix: np.ndarray) -> np.ndarray:
     Matrix[:, 1] *= 0.5 * HEIGHT
 
     return Matrix.astype(np.int16)
+
+
+def Rotate(Matrix: np.ndarray, alpha, beta, gamma):
+
+    XRotationMatrix = np.array([
+        [1,                 0,                   0],
+        [0,     np.cos(alpha),      -np.sin(alpha)],
+        [0,     np.sin(alpha),       np.cos(alpha)],
+    ])
+
+    YRotationMatrix = np.array([
+        [ np.cos(beta),      0,      np.sin(beta)],
+        [            0,      1,                 0],
+        [-np.sin(beta),      0,      np.cos(beta)],
+    ])
+
+    ZRotationMatrix = np.array([
+        [np.cos(gamma),      -np.sin(gamma),    0],
+        [np.sin(gamma),       np.cos(gamma),    0],
+        [0,                               0,    1],
+    ])
+    return Matrix @ XRotationMatrix @ YRotationMatrix @ ZRotationMatrix
+
+def Pad(Matrix: np.ndarray) -> np.ndarray:
+    shape = Matrix.shape
+    return np.concatenate((Matrix, np.ones((shape[0], 1))), axis=1)

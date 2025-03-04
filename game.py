@@ -59,7 +59,8 @@ class GameManager(object):
 
     def _update(self) -> None:
         # Update all game objects
-        # e.g., self.all_sprites.update()
+        for _object in self.objects:
+            _object.update()
         pass
 
 
