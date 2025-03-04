@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 
 from point import Point3d
-from __init__ import WIDTH, HEIGHT
+from config import WIDTH, HEIGHT
 from colors import Color
 
 TranslationVector = np.array([WIDTH // 2, HEIGHT // 2], dtype=np.int32)

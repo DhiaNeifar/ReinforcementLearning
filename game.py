@@ -1,11 +1,10 @@
 # game.py
 
 from typing import List
+import pygame
 
 from colors import Color
 
-
-import pygame
 
 class GameManager(object):
     def __init__(self, caption, height=960, width=1280, BackgroundColor=Color.WHITE.value, fps=60):
@@ -32,6 +31,7 @@ class GameManager(object):
         Surface Getter
         :return: Surface of the game
         """
+
         return self._surface
 
 
@@ -40,6 +40,7 @@ class GameManager(object):
         Main Game Loop. Controlled by attribute running.
         :return: None
         """
+
         while self.running:
             self._handle_events()
             self._update()
