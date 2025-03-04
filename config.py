@@ -3,8 +3,11 @@ import numpy as np
 HEIGHT, WIDTH = 960, 1280
 
 AspectRatio = HEIGHT / WIDTH
-FieldOfView = np.pi / 2
-FieldOfViewRad = 1 / np.tan(FieldOfView / 2)
+
+theta = np.pi * 0.5
+FieldOfView = theta * 0.5
+FieldOfViewRad = 1 / np.tan(FieldOfView)
+
 Z_near, Z_far = 0.1, 1000
 Lambda = Z_far / (Z_far - Z_near)
 

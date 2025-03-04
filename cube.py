@@ -9,7 +9,7 @@ from colors import Color
 
 class Cube:
     def __init__(self, surface, center: Point3d=Point3d(0, 0, 0),
-                 diameter: float=1,
+                 diameter: float=2,
                  VerticesColor=Color.BLACK.value,
                  EdgesColor=Color.GREEN.value) -> None:
         """
@@ -51,14 +51,14 @@ class Cube:
         """
 
         return [
-            Point3d(self.center.x - self.diameter / 2, self.center.y - self.diameter / 2, self.center.z - (self.diameter / 2), self.VerticesColor),
-            Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z - (self.diameter / 2), self.VerticesColor),
-            Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2), self.VerticesColor),
-            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2), self.VerticesColor),
-            Point3d(self.center.x - self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2), self.VerticesColor),
-            Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2), self.VerticesColor),
-            Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2), self.VerticesColor),
-            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2), self.VerticesColor),
+            Point3d(self.center.x - self.diameter / 2, self.center.y - self.diameter / 2, self.center.z - (self.diameter / 2)),
+            Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z - (self.diameter / 2)),
+            Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2)),
+            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2)),
+            Point3d(self.center.x - self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2)),
+            Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2)),
+            Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2)),
+            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2)),
         ]
 
 
@@ -78,28 +78,31 @@ class Cube:
         ScaledCube = Scale(ProjectedCube)
         return ScaledCube
 
-
-    def GetEdges(self):
-        edges = []
+    @staticmethod
+    def GetEdges(Vertices: List[Point3d]) -> List[Edge]:
+        Edges = []
         for i in range(4):
             j = i + 1
             k = j % 4
             l = i + 4
-            edges.append(Edge(self.vertices[i], self.vertices[k], self.EdgesColor))
-            edges.append(Edge(self.vertices[l], self.vertices[k + 4], self.EdgesColor))
-            edges.append(Edge(self.vertices[i], self.vertices[l], self.EdgesColor))
-        return edges
+            Edges.append(Edge(Vertices[i], Vertices[k]))
+            Edges.append(Edge(Vertices[l], Vertices[k + 4]))
+            Edges.append(Edge(Vertices[i], Vertices[l]))
+        return Edges
+
 
     def draw(self) -> None:
         """
         Draws the cube.
-        Transforms the cube and draws the points.
+        Transforms the cube and draws the edges and the points.
 
         :return: None
         """
 
         ScaledCube = self.transform()
         Vertices: List[Point3d] = self.from_numpy(ScaledCube)
+        Edges: List[Edge] = self.GetEdges(Vertices)
+        for edge in Edges:
+            edge.draw(self.surface)
         for vertice in Vertices:
-            print(vertice)
             vertice.draw(self.surface)
