@@ -16,13 +16,13 @@ class Cube:
     def GetPoints(self):
         return [
             Point3d(self.center.x - self.diameter / 2, self.center.y - self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
-            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
             Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
             Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z - (self.diameter / 2), self.PointsColor),
             Point3d(self.center.x - self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
-            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
             Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
             Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
+            Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2), self.PointsColor),
         ]
 
     def GetEdges(self):
@@ -37,7 +37,8 @@ class Cube:
         return edges
 
     def draw(self):
+        # for edge in self.edges:
+            # edge.draw(self.surface)
         for vertice in self.vertices:
+            # vertice.transform()
             vertice.draw(self.surface)
-        for edge in self.edges:
-            edge.draw(self.surface)

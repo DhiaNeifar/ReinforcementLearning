@@ -1,12 +1,9 @@
-import numpy as np
 import pygame
-from pygame.cursors import diamond
 
 from colors import Color
 from __init__ import WIDTH, HEIGHT
 from cube import Cube
 from point import Point3d
-from utils import draw_circle
 
 
 def  main():
@@ -15,8 +12,10 @@ def  main():
 
     clock = pygame.time.Clock()
     center = Point3d(0, 0, 0)
-    diameter = 50
+    diameter = 1
     cube = Cube(center, diameter, screen)
+    cube.draw()
+
     running = True
     while running:
 
@@ -26,10 +25,6 @@ def  main():
 
         screen.fill(Color.WHITE.value)
         cube.draw()
-        # draw_circle(screen, 245, 245, 200, Color.BLACK.value)
-        # pygame.draw.line(screen, Color.BLUE.value, (100, 0), (WIDTH, HEIGHT))
-        # point = np.array([265, 345])
-        # pygame.draw.circle(screen, Color.BLACK.value, point, 30)
         pygame.display.flip()
         clock.tick(60)
 
