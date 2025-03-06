@@ -112,7 +112,7 @@ class Cube(object):
 
         RIGHT = {
             "Vertices": [1, 5, 6, 2],
-            "Edges": [3, 4, 8, 3],
+            "Edges": [5, 4, 8, 3],
             "Color": Color.RED.value
         }
 

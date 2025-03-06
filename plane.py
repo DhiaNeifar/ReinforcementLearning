@@ -32,9 +32,9 @@ class Plane(object):
     def draw(self, CameraPosition=Point3d(0, 0, 0)):
         Normal = self.GetNormal()
         dot_product = np.dot(Normal, (self._Coordinates[0, :] - CameraPosition.to_numpy()))
-        print("Point coordinates ", self._Coordinates[0, :])
-        print("Normal vector ", Normal)
-        print("dot_product ", dot_product)
+        # print("Point coordinates ", self._Coordinates[0, :])
+        # print("Normal vector ", Normal)
+        # print("dot_product ", dot_product)
 
         if dot_product < 0:
             for edge in self._edges:

@@ -11,7 +11,7 @@ def main() -> None:
     game_surface = game_manager.surface
 
     cube = Cube(game_surface)
-    cube.draw()
+    # cube.draw()
     game_manager.AddObjects([cube])
     game_manager.run()
 
