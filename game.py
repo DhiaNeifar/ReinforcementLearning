@@ -21,6 +21,8 @@ class GameManager(object):
 
         self.clock = pygame.time.Clock()
         self.FPS = fps
+        self._fps = None
+
         self.running = True
 
         self.objects = []
@@ -44,6 +46,7 @@ class GameManager(object):
         while self.running:
             self._handle_events()
             self._update()
+            self._fps = self.clock.get_fps()
             self._draw()
             self.clock.tick(self.FPS)
 
@@ -68,12 +71,15 @@ class GameManager(object):
         # Clear the screen
         self._surface.fill(self.BackgroundColor)
 
+        # Display FPS
+        font = pygame.font.Font(None, 30)
+        fps_text = font.render(f"FPS: {self._fps:.2f}", True, Color.BLACK.value)
+        self._surface.blit(fps_text, (10, 10))
+
         # Draw all game objects
         # e.g., self.all_sprites.draw(self.screen)
-
         for _object in self.objects:
             _object.draw()
-
 
         # Flip the display to show the new frame
         pygame.display.flip()

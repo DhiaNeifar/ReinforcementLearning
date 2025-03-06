@@ -4,7 +4,7 @@ import pygame
 from colors import Color
 
 
-class Point3d:
+class Point3d(object):
     def __init__(self, x, y, z, PointsColor=Color.BLACK.value):
         self.x = x
         self.y = y

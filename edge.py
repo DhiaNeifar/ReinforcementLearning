@@ -5,7 +5,7 @@ from colors import Color
 
 
 
-class Edge:
+class Edge(object):
     def __init__(self, point1: Point3d, point2: Point3d, EdgeColor=Color.GREEN.value):
         self.start = (point1.x, point1.y)
         self.end = (point2.x, point2.y)

@@ -70,7 +70,7 @@ def Scale(Matrix: np.ndarray) -> np.ndarray:
     Matrix[:, 0] *= 0.5 * WIDTH
     Matrix[:, 1] *= 0.5 * HEIGHT
 
-    return Matrix.astype(np.int16)
+    return Matrix.astype(np.float64)
 
 
 def Rotate(Matrix: np.ndarray, alpha, beta, gamma):

@@ -1,0 +1,13 @@
+# Ignore everything
+*
+
+# Don't ignore this .gitignore file
+!.gitignore
+
+# Allow directories (so we can access .py files inside them)
+!*/
+
+# Allow Python files
+!*.py
+!*.md
+!LICENSE

@@ -1,13 +1,14 @@
 import numpy as np
 from typing import List
 
-from config import Translate, Project, Scale, Rotate, Pad
+from colors import Color
 from point import Point3d
 from edge import Edge
-from colors import Color
+from plane import Plane
+from config import Translate, Project, Scale, Rotate, Pad
 
 
-class Cube:
+class Cube(object):
     def __init__(self, surface, center: Point3d=Point3d(0, 0, 0),
                  diameter: float=1,
                  VerticesColor=Color.BLACK.value,
@@ -34,7 +35,7 @@ class Cube:
         """
         Transforms vertices of the cube from Point3d to NumPy.Ndarray.
         The size of the matrix is (8, 4). Forth column is ones.
-        :return: np.ndarray .
+        :return: np.ndarray
         """
 
         vertices: List[Point3d] = self.GetPoints()
@@ -65,6 +66,7 @@ class Cube:
 
     def transform(self) -> np.ndarray:
         """
+        #TODO: Update the text for ZAxis
         Applies the transformation to the vertices of the cube.
         Translation of z-axis by 3 to be in the field of view Frustum.
         Projects the Matrix using Perspective Projection Matrix.
@@ -79,7 +81,7 @@ class Cube:
         ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=3.0)
         ProjectedCube = Project(ZTranslatedCube)
         ScaledCube = Scale(ProjectedCube)
-        return ScaledCube
+        return ScaledCube, ZTranslatedCube
 
     @staticmethod
     def GetEdges(Vertices: List[Point3d]) -> List[Edge]:
@@ -94,6 +96,71 @@ class Cube:
         return Edges
 
 
+    def GetPlanes(self, vertices, edges, CubeCoordinates):
+        CubeCoordinates = CubeCoordinates[:, :3]
+        FRONT = {
+            "Vertices": [0, 1, 2, 3],
+            "Edges": (0, 3, 6, 9),
+            "Color": Color.YELLOW.value
+        }
+
+        BACK = {
+            "Vertices": [5, 4, 7, 6],
+            "Edges": [1, 10, 7, 4],
+            "Color": Color.WHITE.value
+        }
+
+        RIGHT = {
+            "Vertices": [1, 5, 6, 2],
+            "Edges": [3, 4, 8, 3],
+            "Color": Color.RED.value
+        }
+
+        LEFT = {
+            "Vertices": [4, 0, 3, 7],
+            "Edges": [2, 9, 11, 10],
+            "Color": Color.ORANGE.value
+        }
+
+        TOP = {
+            "Vertices": [4, 5, 1, 0],
+            "Edges": [1, 5, 0, 2],
+            "Color": Color.GREEN.value
+        }
+
+        BOTTOM = {
+            "Vertices": [3, 2, 6, 7],
+            "Edges": [6, 8, 7, 11],
+            "Color": Color.BLUE.value
+        }
+
+        return [Plane([vertices[i] for i in plane["Vertices"]],
+                      [edges[i] for i in plane["Edges"]],
+                      CubeCoordinates[plane["Vertices"]],
+                      self.surface,
+                      plane["Color"],) for plane in [FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM]]
+
+
+        # Front = Plane([vertices[0], vertices[1], vertices[2], vertices[3]],
+        #               [edges[0], edges[3], edges[6], edges[9]], Color.YELLOW.value)
+        #
+        # Right = Plane([vertices[1], vertices[5], vertices[6], vertices[2]],
+        #               [edges[5], edges[4], edges[8], edges[3]], Color.RED.value)
+        #
+        # Back = Plane([vertices[5], vertices[4], vertices[7], vertices[6]],
+        #               [edges[1], edges[10], edges[7], edges[4]], Color.WHITE.value)
+        #
+        # Left = Plane([vertices[4], vertices[0], vertices[3], vertices[7]],
+        #               [edges[2], edges[9], edges[11], edges[10]], Color.ORANGE.value)
+        #
+        # Top = Plane([vertices[4], vertices[5], vertices[1], vertices[0]],
+        #               [edges[1], edges[5], edges[0], edges[2]], Color.GREEN.value)
+        #
+        # Bottom = Plane([vertices[7], vertices[6], vertices[2], vertices[3]],
+        #               [edges[7], edges[8], edges[6], edges[11]], Color.BLUE.value)
+        # return [Front, Right, Back, Left, Top, Bottom]
+
+
     def draw(self) -> None:
         """
         Draws the cube.
@@ -102,14 +169,18 @@ class Cube:
         :return: None
         """
 
-        ScaledCube = self.transform()
+        ScaledCube, ZTranslatedCube = self.transform()
         Vertices: List[Point3d] = self.from_numpy(ScaledCube)
         Edges: List[Edge] = self.GetEdges(Vertices)
-        for edge in Edges:
-            edge.draw(self.surface)
-        for vertice in Vertices:
-            vertice.draw(self.surface)
+        Planes: List[Plane] = self.GetPlanes(Vertices, Edges, ZTranslatedCube)
+        # Sort planes by Z.
+        for plane in Planes:
+            plane.draw()
 
     def update(self):
         for i in range(3):
             self.rotation[i] += 0.01
+        pass
+
+    def GetLayers(self):
+        pass
