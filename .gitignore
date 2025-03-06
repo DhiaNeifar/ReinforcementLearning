@@ -1,5 +1,6 @@
 # Ignore everything
 *
+.idea/
 
 # Don't ignore this .gitignore file
 !.gitignore

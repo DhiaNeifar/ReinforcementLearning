@@ -96,5 +96,4 @@ def Rotate(Matrix: np.ndarray, alpha, beta, gamma):
 
 def Pad(Matrix: np.ndarray) -> np.ndarray:
     shape = Matrix.shape
-
     return np.concatenate((Matrix, np.ones((shape[0], 1))), axis=1)
