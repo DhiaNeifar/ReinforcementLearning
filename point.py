@@ -30,7 +30,7 @@ class Point3d(object):
         return np.array([self.x, self.y, self.z], dtype=np.float16)
 
 
-    def draw(self, surface, width=5) -> None:
+    def draw(self, surface, width=0) -> None:
         """
         The Point3d leverages Surface and the circle shape from pygame.
         :param surface: pygame.Surface used for drawing.

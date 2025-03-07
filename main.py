@@ -1,7 +1,7 @@
 from colors import Color
 from config import HEIGHT, WIDTH
 from game import GameManager
-from cube import Cube
+from rubikcube import RubikCube
 
 
 def main() -> None:
@@ -10,9 +10,11 @@ def main() -> None:
     game_manager = GameManager(game_caption, height=HEIGHT, width=WIDTH, BackgroundColor=Color.BEIGE.value)
     game_surface = game_manager.surface
 
-    cube = Cube(game_surface)
+    RCube = RubikCube(game_surface)
     # cube.draw()
-    game_manager.AddObjects([cube])
+    game_manager.AddObjects([
+        RCube
+    ])
     game_manager.run()
 
 

@@ -1,34 +1,71 @@
-import pygame
-
-from colors import Color
-from __init__ import WIDTH, HEIGHT
 from cube import Cube
 from point import Point3d
 
 
-def  main():
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+class RubikCube(object):
+    def __init__(self, surface):
+        self._surface = surface
+        self._RotationSpeed = 0.0001 * 60
+        self.cubes = [
+            Cube(self._surface, Point3d(-1, -1, -1), diameter=1),
+            Cube(self._surface, Point3d(-1, -1, 0), diameter=1),
+            Cube(self._surface, Point3d(-1, -1, 1), diameter=1),
+            Cube(self._surface, Point3d(-1, 0, -1), diameter=1),
+            Cube(self._surface, Point3d(-1, 0, 0), diameter=1),
+            Cube(self._surface, Point3d(-1, 0, 1), diameter=1),
+            Cube(self._surface, Point3d(-1, 1, -1), diameter=1),
+            Cube(self._surface, Point3d(-1, 1,  0), diameter=1),
+            Cube(self._surface, Point3d(-1, 1, 1), diameter=1),
 
-    clock = pygame.time.Clock()
-    center = Point3d(0, 0, 0)
-    diameter = 1
-    cube = Cube(center, diameter, screen)
-    cube.draw()
+            Cube(self._surface, Point3d(0, -1, -1), diameter=1),
+            Cube(self._surface, Point3d(0, -1, 0), diameter=1),
+            Cube(self._surface, Point3d(0, -1, 1), diameter=1),
+            Cube(self._surface, Point3d(0, 0, -1), diameter=1),
+            Cube(self._surface, Point3d(0, 0, 0), diameter=1),
+            Cube(self._surface, Point3d(0, 0, 1), diameter=1),
+            Cube(self._surface, Point3d(0, 1, -1), diameter=1),
+            Cube(self._surface, Point3d(0, 1, 0), diameter=1),
+            Cube(self._surface, Point3d(0, 1, 1), diameter=1),
 
-    running = True
-    while running:
+            Cube(self._surface, Point3d(1, -1, -1), diameter=1),
+            Cube(self._surface, Point3d(1, -1, 0), diameter=1),
+            Cube(self._surface, Point3d(1, -1, 1), diameter=1),
+            Cube(self._surface, Point3d(1, 0, -1), diameter=1),
+            Cube(self._surface, Point3d(1, 0, 0), diameter=1),
+            Cube(self._surface, Point3d(1, 0, 1), diameter=1),
+            Cube(self._surface, Point3d(1, 1, -1), diameter=1),
+            Cube(self._surface, Point3d(1, 1, 0), diameter=1),
+            Cube(self._surface, Point3d(1, 1, 1), diameter=1),
+            # Cube(surface, Point3d(-1, 0, -1), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            #
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+            # Cube(surface, Point3d(0, 0, 0), diameter=0.5),
+        ]
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        screen.fill(Color.WHITE.value)
-        cube.draw()
-        pygame.display.flip()
-        clock.tick(60)
+    def draw(self):
+        Planes = [plane for cube in self.cubes for plane in cube.GetPlanes()]
+        Planes.sort(key=lambda plane_: plane_.GetAverageZ(), reverse=True)
+        for plane in Planes:
+            plane.draw()
 
 
-
-if __name__ == "__main__":
-    main()
+    def update(self):
+        for cube in self.cubes:
+            for i in range(3):
+                cube.rotation[i] += self._RotationSpeed
+        pass

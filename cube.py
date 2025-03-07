@@ -6,6 +6,7 @@ from point import Point3d
 from edge import Edge
 from plane import Plane
 from config import Translate, Project, Scale, Rotate, Pad
+from utils import Sort
 
 
 class Cube(object):
@@ -78,7 +79,7 @@ class Cube(object):
         Coordinates = self.to_numpy()
         RotatedCube = Rotate(Coordinates, *self.rotation)
         PaddedCube = Pad(RotatedCube)
-        ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=3.0)
+        ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=5.0)
         ProjectedCube = Project(ZTranslatedCube)
         ScaledCube = Scale(ProjectedCube)
         return ScaledCube, ZTranslatedCube
@@ -96,8 +97,11 @@ class Cube(object):
         return Edges
 
 
-    def GetPlanes(self, vertices, edges, CubeCoordinates):
-        CubeCoordinates = CubeCoordinates[:, :3]
+    def GetPlanes(self):
+        ScaledCube, ZTranslatedCube = self.transform()
+        Vertices: List[Point3d] = self.from_numpy(ScaledCube)
+        Edges: List[Edge] = self.GetEdges(Vertices)
+        ZTranslatedCube = ZTranslatedCube[:, :3]
         FRONT = {
             "Vertices": [0, 1, 2, 3],
             "Edges": (0, 3, 6, 9),
@@ -134,31 +138,11 @@ class Cube(object):
             "Color": Color.BLUE.value
         }
 
-        return [Plane([vertices[i] for i in plane["Vertices"]],
-                      [edges[i] for i in plane["Edges"]],
-                      CubeCoordinates[plane["Vertices"]],
+        return [Plane([Vertices[i] for i in plane["Vertices"]],
+                      [Edges[i] for i in plane["Edges"]],
+                      ZTranslatedCube[plane["Vertices"]],
                       self.surface,
                       plane["Color"],) for plane in [FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM]]
-
-
-        # Front = Plane([vertices[0], vertices[1], vertices[2], vertices[3]],
-        #               [edges[0], edges[3], edges[6], edges[9]], Color.YELLOW.value)
-        #
-        # Right = Plane([vertices[1], vertices[5], vertices[6], vertices[2]],
-        #               [edges[5], edges[4], edges[8], edges[3]], Color.RED.value)
-        #
-        # Back = Plane([vertices[5], vertices[4], vertices[7], vertices[6]],
-        #               [edges[1], edges[10], edges[7], edges[4]], Color.WHITE.value)
-        #
-        # Left = Plane([vertices[4], vertices[0], vertices[3], vertices[7]],
-        #               [edges[2], edges[9], edges[11], edges[10]], Color.ORANGE.value)
-        #
-        # Top = Plane([vertices[4], vertices[5], vertices[1], vertices[0]],
-        #               [edges[1], edges[5], edges[0], edges[2]], Color.GREEN.value)
-        #
-        # Bottom = Plane([vertices[7], vertices[6], vertices[2], vertices[3]],
-        #               [edges[7], edges[8], edges[6], edges[11]], Color.BLUE.value)
-        # return [Front, Right, Back, Left, Top, Bottom]
 
 
     def draw(self) -> None:
@@ -168,19 +152,19 @@ class Cube(object):
 
         :return: None
         """
-
-        ScaledCube, ZTranslatedCube = self.transform()
-        Vertices: List[Point3d] = self.from_numpy(ScaledCube)
-        Edges: List[Edge] = self.GetEdges(Vertices)
-        Planes: List[Plane] = self.GetPlanes(Vertices, Edges, ZTranslatedCube)
-        # Sort planes by Z.
-        for plane in Planes:
-            plane.draw()
+        pass
+        # ScaledCube, ZTranslatedCube = self.transform()
+        # Vertices: List[Point3d] = self.from_numpy(ScaledCube)
+        # Edges: List[Edge] = self.GetEdges(Vertices)
+        # Planes: List[Plane] = self.GetPlanes(Vertices, Edges, ZTranslatedCube)
+        # Planes.sort(key=lambda plane_: plane_.GetAverageZ(), reverse=True)
+        # for plane in Planes:
+        #     plane.draw()
 
     def update(self):
         for i in range(3):
             self.rotation[i] += 0.01
-        pass
+
 
     def GetLayers(self):
         pass
