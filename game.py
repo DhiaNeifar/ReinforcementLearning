@@ -7,7 +7,7 @@ from colors import Color
 
 
 class GameManager(object):
-    def __init__(self, caption, height=960, width=1280, BackgroundColor=Color.WHITE.value, fps=60):
+    def __init__(self, caption, height=960, width=1280, BackgroundColor=Color.WHITE.value, fps=120):
         pygame.init()
 
         self.CAPTION = caption
@@ -58,6 +58,9 @@ class GameManager(object):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     self.running = False
+                else:
+                    for _object in self.objects:
+                        _object.ActionRequired(event.key)
 
 
     def _update(self) -> None:

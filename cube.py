@@ -5,8 +5,7 @@ from colors import Color
 from point import Point3d
 from edge import Edge
 from plane import Plane
-from config import Translate, Project, Scale, Rotate, Pad
-from utils import Sort
+from config import Translate, Project, Scale, Rotate, Pad, LAYERS
 
 
 class Cube(object):
@@ -79,7 +78,7 @@ class Cube(object):
         Coordinates = self.to_numpy()
         RotatedCube = Rotate(Coordinates, *self.rotation)
         PaddedCube = Pad(RotatedCube)
-        ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=5.0)
+        ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=10.0)
         ProjectedCube = Project(ZTranslatedCube)
         ScaledCube = Scale(ProjectedCube)
         return ScaledCube, ZTranslatedCube
@@ -102,47 +101,11 @@ class Cube(object):
         Vertices: List[Point3d] = self.from_numpy(ScaledCube)
         Edges: List[Edge] = self.GetEdges(Vertices)
         ZTranslatedCube = ZTranslatedCube[:, :3]
-        FRONT = {
-            "Vertices": [0, 1, 2, 3],
-            "Edges": (0, 3, 6, 9),
-            "Color": Color.YELLOW.value
-        }
-
-        BACK = {
-            "Vertices": [5, 4, 7, 6],
-            "Edges": [1, 10, 7, 4],
-            "Color": Color.WHITE.value
-        }
-
-        RIGHT = {
-            "Vertices": [1, 5, 6, 2],
-            "Edges": [5, 4, 8, 3],
-            "Color": Color.RED.value
-        }
-
-        LEFT = {
-            "Vertices": [4, 0, 3, 7],
-            "Edges": [2, 9, 11, 10],
-            "Color": Color.ORANGE.value
-        }
-
-        TOP = {
-            "Vertices": [4, 5, 1, 0],
-            "Edges": [1, 5, 0, 2],
-            "Color": Color.GREEN.value
-        }
-
-        BOTTOM = {
-            "Vertices": [3, 2, 6, 7],
-            "Edges": [6, 8, 7, 11],
-            "Color": Color.BLUE.value
-        }
-
         return [Plane([Vertices[i] for i in plane["Vertices"]],
                       [Edges[i] for i in plane["Edges"]],
                       ZTranslatedCube[plane["Vertices"]],
                       self.surface,
-                      plane["Color"],) for plane in [FRONT, BACK, RIGHT, LEFT, TOP, BOTTOM]]
+                      plane["Color"],) for plane in LAYERS]
 
 
     def draw(self) -> None:

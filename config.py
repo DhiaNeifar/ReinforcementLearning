@@ -1,5 +1,7 @@
 import numpy as np
 
+from colors import Color
+
 HEIGHT, WIDTH = 960, 1280
 
 AspectRatio = HEIGHT / WIDTH
@@ -17,7 +19,6 @@ ProjectionMatrix = np.array([
     [                        0,             0,                Lambda,           1],
     [                        0,             0,      -Lambda * Z_near,           0]
 ], dtype=np.float16)
-
 
 def Translate(Matrix: np.ndarray, Tx: float, Ty: float, Tz: float) -> np.ndarray:
     """
@@ -97,3 +98,58 @@ def Rotate(Matrix: np.ndarray, alpha, beta, gamma):
 def Pad(Matrix: np.ndarray) -> np.ndarray:
     shape = Matrix.shape
     return np.concatenate((Matrix, np.ones((shape[0], 1))), axis=1)
+
+
+
+FRONT = {
+    "Vertices": [0, 1, 2, 3],
+    "Edges": (0, 3, 6, 9),
+    "Color": Color.YELLOW.value
+}
+
+RIGHT = {
+    "Vertices": [1, 5, 6, 2],
+    "Edges": [5, 4, 8, 3],
+    "Color": Color.RED.value
+}
+
+BACK = {
+    "Vertices": [5, 4, 7, 6],
+    "Edges": [1, 10, 7, 4],
+    "Color": Color.WHITE.value
+}
+
+LEFT = {
+    "Vertices": [4, 0, 3, 7],
+    "Edges": [2, 9, 11, 10],
+    "Color": Color.ORANGE.value
+}
+
+UP = {
+    "Vertices": [4, 5, 1, 0],
+    "Edges": [1, 5, 0, 2],
+    "Color": Color.GREEN.value
+}
+
+DOWN = {
+    "Vertices": [3, 2, 6, 7],
+    "Edges": [6, 8, 7, 11],
+    "Color": Color.BLUE.value
+}
+layers = {
+    "FRONT": 0,
+    "RIGHT": 1,
+    "BACK": 2,
+    "LEFT": 3,
+    "UP": 4,
+    "DOWN": 5,
+}
+LAYERS = [FRONT, RIGHT, BACK, LEFT, UP, DOWN]
+
+RotationAngle = np.pi / 2
+
+Axes = {
+    "X axis": 0,
+    "Y axis": 1,
+    "Z axis": 2,
+}
