@@ -60,7 +60,7 @@ class GameManager(object):
                     self.running = False
                 else:
                     for _object in self.objects:
-                        _object.ActionRequired(event.key)
+                        _object.KeyTrigger(event.key)
 
 
     def _update(self) -> None:

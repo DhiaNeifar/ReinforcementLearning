@@ -3,7 +3,7 @@ import numpy as np
 from colors import Color
 
 HEIGHT, WIDTH = 960, 1280
-
+FPS = 120
 AspectRatio = HEIGHT / WIDTH
 
 theta = np.pi * 0.5
@@ -74,7 +74,7 @@ def Scale(Matrix: np.ndarray) -> np.ndarray:
     return Matrix.astype(np.float64)
 
 
-def Rotate(Matrix: np.ndarray, alpha, beta, gamma):
+def Rotate(Matrix: np.ndarray, alpha, beta, gamma, RotationOrder):
 
     XRotationMatrix = np.array([
         [1,                 0,                   0],
@@ -93,7 +93,15 @@ def Rotate(Matrix: np.ndarray, alpha, beta, gamma):
         [np.sin(gamma),       np.cos(gamma),    0],
         [0,                               0,    1],
     ])
-    return Matrix @ XRotationMatrix @ YRotationMatrix @ ZRotationMatrix
+    # print(RotationOrder)
+    for order in RotationOrder:
+        if order == 0:
+            Matrix = Matrix @ XRotationMatrix
+        if order == 1:
+            Matrix = Matrix @ YRotationMatrix
+        if order == 2:
+            Matrix = Matrix @ ZRotationMatrix
+    return Matrix
 
 def Pad(Matrix: np.ndarray) -> np.ndarray:
     shape = Matrix.shape
@@ -145,8 +153,6 @@ layers = {
     "DOWN": 5,
 }
 LAYERS = [FRONT, RIGHT, BACK, LEFT, UP, DOWN]
-
-RotationAngle = np.pi / 2
 
 Axes = {
     "X axis": 0,

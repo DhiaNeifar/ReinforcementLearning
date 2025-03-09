@@ -4,8 +4,7 @@ import numpy as np
 
 
 class Action(object):
-    def __init__(self, ActionType):
-        self.type = ActionType
+    def __init__(self):
         pass
 
     @staticmethod

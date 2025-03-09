@@ -1,5 +1,5 @@
 from colors import Color
-from config import HEIGHT, WIDTH
+from config import HEIGHT, WIDTH, FPS
 from game import GameManager
 from rubikcube import RubikCube
 
@@ -7,7 +7,7 @@ from rubikcube import RubikCube
 def main() -> None:
     game_caption = 'cube'
 
-    game_manager = GameManager(game_caption, height=HEIGHT, width=WIDTH, BackgroundColor=Color.BEIGE.value)
+    game_manager = GameManager(game_caption, height=HEIGHT, width=WIDTH, fps=FPS, BackgroundColor=Color.BEIGE.value)
     game_surface = game_manager.surface
 
     RCube = RubikCube(game_surface)

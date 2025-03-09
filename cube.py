@@ -26,7 +26,7 @@ class Cube(object):
         self.center = center
         self.diameter = diameter
         self.surface = surface
-        self.rotation = [0, 0, 0]
+        self.rotation = [np.pi * 0.1, np.pi * 0.1, np.pi * 0.1]
         self.VerticesColor = VerticesColor
         self.EdgesColor = EdgesColor
 
@@ -61,10 +61,11 @@ class Cube(object):
             Point3d(self.center.x + self.diameter / 2, self.center.y - self.diameter / 2, self.center.z + (self.diameter / 2)),
             Point3d(self.center.x + self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2)),
             Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2)),
+            self.center,
         ]
 
 
-    def transform(self) -> np.ndarray:
+    def transform(self, RotationOrder) -> np.ndarray:
         """
         #TODO: Update the text for ZAxis
         Applies the transformation to the vertices of the cube.
@@ -76,7 +77,7 @@ class Cube(object):
         """
 
         Coordinates = self.to_numpy()
-        RotatedCube = Rotate(Coordinates, *self.rotation)
+        RotatedCube = Rotate(Coordinates, *self.rotation, RotationOrder)
         PaddedCube = Pad(RotatedCube)
         ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=10.0)
         ProjectedCube = Project(ZTranslatedCube)
@@ -96,8 +97,8 @@ class Cube(object):
         return Edges
 
 
-    def GetPlanes(self):
-        ScaledCube, ZTranslatedCube = self.transform()
+    def GetPlanes(self, RotationOrder):
+        ScaledCube, ZTranslatedCube = self.transform(RotationOrder)
         Vertices: List[Point3d] = self.from_numpy(ScaledCube)
         Edges: List[Edge] = self.GetEdges(Vertices)
         ZTranslatedCube = ZTranslatedCube[:, :3]
