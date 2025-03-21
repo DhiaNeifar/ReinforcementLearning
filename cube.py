@@ -7,6 +7,7 @@
 import numpy as np
 from typing import List
 
+from game import Game
 from enums.colors import Color
 from point import Point3d
 from edge import Edge
@@ -14,11 +15,11 @@ from plane import Plane
 from config import Translate, Project, Scale, Rotate, Pad, LAYERS, rotate
 
 
-class Cube(object):
+class Cube(Game):
     def __init__(self,
                  surface,
-                 center: Point3d=Point3d(0, 0, 0),
-                 diameter: float=1,
+                 center: Point3d = Point3d(0, 0, 0),
+                 diameter: float = 1,
                  VerticesColor=Color.BLACK.value,
                  EdgesColor=Color.GREEN.value,
                  draw_=True) -> None:
@@ -32,6 +33,7 @@ class Cube(object):
         :param EdgesColor: Color assigned to the edges of the cube.
         """
 
+        super().__init__(surface)
         self.center = center
         self.diameter = diameter
         self.surface = surface
@@ -83,30 +85,6 @@ class Cube(object):
             Point3d(self.center.x - self.diameter / 2, self.center.y + self.diameter / 2, self.center.z + (self.diameter / 2)),
             self.center,
         ]
-
-
-    def transform(self, tz=10.0) -> (np.ndarray, np.ndarray):
-        """
-        Applies the transformation of the vertices of the cube.
-        Coordinates of the cube are extracted in np.ndarray.
-        Global Rotation of the cube is applied.
-        Padding is added to the Coordinates of the cube to facilitates Translation.
-        Translation of z-axis by value :param:tz to be in the field of view Frustum.
-        Projects the Matrix using Perspective Projection Matrix.
-        Scales the Matrix to pygame screen.
-        :param tz: Translation of the cube.
-
-        :return: Coordinates of Points of cube scaled & ZTranslatedCube.
-        We keep track of ZTranslatedCube because we have not divided by the Z axis.
-        """
-
-        Coordinates = self.to_numpy()
-        RotatedCube = Rotate(Coordinates, *self.GlobalRotation)
-        PaddedCube = Pad(RotatedCube)
-        ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=tz)
-        ProjectedCube = Project(ZTranslatedCube)
-        ScaledCube = Scale(ProjectedCube)
-        return ScaledCube, ZTranslatedCube
 
     @staticmethod
     def GetEdges(Vertices: List[Point3d]) -> List[Edge]:
@@ -186,7 +164,7 @@ class Cube(object):
         for plane in Planes:
             plane.draw()
 
-    def GlobalUpdate(self, yaw=0.005, pitch=0.005, roll=0.005):
+    def update(self, yaw=0.005, pitch=0.005, roll=0.005):
         self.GlobalRotation[0] +=  yaw
         self.GlobalRotation[1] += pitch
         self.GlobalRotation[2] += roll

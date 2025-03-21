@@ -7,47 +7,52 @@
 import pygame
 import numpy as np
 
+from game import Game
 from point import Point3d
 from enums.colors import Color
-from config import Translate, Project, Scale, Rotate, Pad
 
 
-class Referential:
-    def __init__(self, surface,
-                 x=Point3d(x=2, y=0, z=0),
-                 y=Point3d(x=0, y=2, z=0),
-                 z=Point3d(x=0, y=0, z=2),
-                 ):
-        self.x = x
-        self.y = y
-        self.z = z
+class Referential(Game):
+    def __init__(self,
+                 surface: pygame.Surface,
+                 XAxis=Point3d(x=2, y=0, z=0),
+                 YAxis=Point3d(x=0, y=2, z=0),
+                 ZAxis=Point3d(x=0, y=0, z=2),
+                 ) -> None:
+        """
+        Constructor for Referential class.
+        Use this in main if a referential is needed to keep up with the orientation of the objects and axes.
+        :param surface: pygame.Surface
+        :param XAxis: X Axis and where it points to. Initialized at Point3d(2, 0, 0)
+        :param YAxis: Y Axis and where it points to. Initialized at Point3d(0, 2, 0)
+        :param ZAxis: Z Axis and where it points to. Initialized at Point3d(0, 0, 2)
+        """
+
+        super().__init__(surface)
+        self.XAxis = XAxis
+        self.YAxis = YAxis
+        self.ZAxis = ZAxis
         self.surface = surface
+        self.GlobalRotation = [0.0, 0.0, 0.0]
 
-    def to_numpy(self):
-        return np.array([point.to_numpy() for point in [Point3d(0, 0, 0), self.x, self.y, self.z]], dtype=np.float16)
-
-
-    def transform(self) -> np.ndarray:
+    def to_numpy(self) -> np.ndarray:
         """
-        #TODO: Update the text for ZAxis
-        Applies the transformation to the vertices of the cube.
-        Translation of z-axis by 3 to be in the field of view Frustum.
-        Projects the Matrix using Perspective Projection Matrix.
-        Scales the Matrix to pygame screen.
+        Adds the Origin O Point3d(0, 0, 0) to the referential and transforms all points to numpy matrix for coordinates.
 
-        :return: Coordinates of Points of cube scaled.
+        :return: Coordinates Matrix np.ndarray
         """
 
-        Coordinates = self.to_numpy()
-        RotatedRef = Rotate(Coordinates, np.pi * 0.0, np.pi * 0.0, np.pi * 0.0, [0, 1, 2])
-        PaddedRef = Pad(RotatedRef)
-        ZTranslatedRef = Translate(PaddedRef, Tx=0.0, Ty=0.0, Tz=10.0)
-        ProjectedRef = Project(ZTranslatedRef)
-        ScaledRef = Scale(ProjectedRef)
-        return ScaledRef
+        return np.array([point.to_numpy() for point in [Point3d(0, 0, 0), self.XAxis, self.YAxis, self.ZAxis]], dtype=np.float16)
+
 
     def draw(self):
-        ScaledRef = self.transform()
+        """
+        Method that draws the Referential on the surface.
+
+        :return:
+        """
+
+        ScaledRef, ZTranslated = self.transform()
         pygame.draw.line(self.surface, Color.RED.value,
                          (ScaledRef[0, 0], ScaledRef[0, 1]),  # start at origin
                          (ScaledRef[1, 0], ScaledRef[1, 1]),  # end 100 px to the right

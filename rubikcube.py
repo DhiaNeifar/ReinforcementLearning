@@ -8,19 +8,20 @@ import numpy as np
 import pygame
 from typing import List
 
+from game import Game
 from cube import Cube
 from point import Point3d
 from config import FPS
 
 
-class RubikCube(object):
+class RubikCube(Game):
     def __init__(self, surface: pygame.Surface) -> None:
         """
         Constructor for RubikCube.
         A Rubik's Cube is designed as a combination of 27 cubes.
         :param surface: It is the canvas used to draw objects on. surface is passed down from Game Manager. Type: pygame.Surface
         """
-
+        super().__init__(surface)
         self.surface = surface
         self.RotationSpeed = 0.2 * FPS # Multiply by 0.5 to double the speed!
         self.RotationAngle = np.pi / self.RotationSpeed
@@ -167,7 +168,7 @@ class RubikCube(object):
 
         # Updating the global rotation of cubes
         for cube in self.cubes:
-            cube.GlobalUpdate()
+            cube.update()
         pass
 
     def GetSideCubes(self, side: str) -> List[int]:

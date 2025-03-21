@@ -11,7 +11,16 @@ from enums.colors import Color
 
 
 class Point3d(object):
-    def __init__(self, x, y, z, PointsColor=Color.BLACK.value):
+    def __init__(self, x, y, z, PointsColor=Color.BLACK.value) -> None:
+        """
+        Constructor of Point3d.
+
+        :param x:
+        :param y:
+        :param z:
+        :param PointsColor:
+        """
+
         self.x = x
         self.y = y
         self.z = z
