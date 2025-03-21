@@ -23,7 +23,7 @@ class Point3d(object):
 
     def to_numpy(self) -> np.ndarray:
         """
-        Transform Point3d into a numpy array with shape (4,).
+        Transform Point3d into a numpy array with shape (3,).
         :return: numpy array representing the coordinates of the Point3d.
         """
 

@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.spatial.transform import Rotation as R
 
 from colors import Color
 
@@ -73,9 +74,31 @@ def Scale(Matrix: np.ndarray) -> np.ndarray:
 
     return Matrix.astype(np.float64)
 
+def rotate(Matrix: np.ndarray, angle: float, axis):
+    if Axes[axis] == Axes["X axis"]:
+        XRotationMatrix = np.array([
+            [1, 0, 0],
+            [0, np.cos(angle), -np.sin(angle)],
+            [0, np.sin(angle), np.cos(angle)],
+        ])
+        return Matrix @ XRotationMatrix
+    if Axes[axis] == Axes["Y axis"]:
+        YRotationMatrix = np.array([
+            [np.cos(angle), 0, np.sin(angle)],
+            [0, 1, 0],
+            [-np.sin(angle), 0, np.cos(angle)],
+        ])
+        return Matrix @ YRotationMatrix
+    if Axes[axis] == Axes["Z axis"]:
+        ZRotationMatrix = np.array([
+            [np.cos(angle), -np.sin(angle), 0],
+            [np.sin(angle), np.cos(angle), 0],
+            [0, 0, 1],
+        ])
+        return Matrix @ ZRotationMatrix
 
 def Rotate(Matrix: np.ndarray, alpha, beta, gamma, RotationOrder):
-
+    # return Matrix @ np.array(R_new.as_matrix())
     XRotationMatrix = np.array([
         [1,                 0,                   0],
         [0,     np.cos(alpha),      -np.sin(alpha)],
@@ -93,6 +116,7 @@ def Rotate(Matrix: np.ndarray, alpha, beta, gamma, RotationOrder):
         [np.sin(gamma),       np.cos(gamma),    0],
         [0,                               0,    1],
     ])
+    return Matrix @ XRotationMatrix @ YRotationMatrix @ ZRotationMatrix
     # print(RotationOrder)
     for order in RotationOrder:
         if order == 0:

@@ -9,3 +9,4 @@ class Color(Enum):
     YELLOW = (255, 255, 0)
     ORANGE = (255, 165, 0)
     BEIGE = (245, 245, 220)
+    MAGENTA = (255, 0, 255)

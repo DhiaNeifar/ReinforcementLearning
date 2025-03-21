@@ -5,14 +5,15 @@ from colors import Color
 from point import Point3d
 from edge import Edge
 from plane import Plane
-from config import Translate, Project, Scale, Rotate, Pad, LAYERS
+from config import Translate, Project, Scale, Rotate, Pad, LAYERS, rotate
 
 
 class Cube(object):
     def __init__(self, surface, center: Point3d=Point3d(0, 0, 0),
                  diameter: float=1,
                  VerticesColor=Color.BLACK.value,
-                 EdgesColor=Color.GREEN.value) -> None:
+                 Face=0,
+                 EdgesColor=Color.GREEN.value, draw=True) -> None:
         """
         Constructor of class Cube.
 
@@ -26,20 +27,22 @@ class Cube(object):
         self.center = center
         self.diameter = diameter
         self.surface = surface
-        self.rotation = [np.pi * 0.1, np.pi * 0.1, np.pi * 0.1]
+        self.points = self.GetPoints()
+        self.GlobalRotation = [np.pi * 0.0, np.pi * 0.0, np.pi * 0.0] # [np.pi * 0.1, np.pi * 0.1, np.pi * 0.1]
         self.VerticesColor = VerticesColor
         self.EdgesColor = EdgesColor
-
+        self.Face = Face
+        self.draw = draw
 
     def to_numpy(self) -> np.ndarray:
         """
         Transforms vertices of the cube from Point3d to NumPy.Ndarray.
-        The size of the matrix is (8, 4). Forth column is ones.
+        The size of the matrix is (9, 3). Forth column is ones.
         :return: np.ndarray
         """
 
-        vertices: List[Point3d] = self.GetPoints()
-        return np.array([vertice.to_numpy() for vertice in vertices], dtype=np.float16)
+        vertices: List[Point3d] = self.points
+        return np.array([vertex.to_numpy() for vertex in vertices], dtype=np.float16)
 
     @staticmethod
     def from_numpy(array):
@@ -49,7 +52,7 @@ class Cube(object):
     def GetPoints(self) -> List[Point3d]:
         """
         Extracts the vertices coordinates of the cube.
-        :return: List[Point3d]
+        :return: List[Point3d] | Length = 9
         """
 
         return [
@@ -77,7 +80,7 @@ class Cube(object):
         """
 
         Coordinates = self.to_numpy()
-        RotatedCube = Rotate(Coordinates, *self.rotation, RotationOrder)
+        RotatedCube = Rotate(Coordinates, *self.GlobalRotation, RotationOrder)
         PaddedCube = Pad(RotatedCube)
         ZTranslatedCube = Translate(PaddedCube, Tx=0.0, Ty=0.0, Tz=10.0)
         ProjectedCube = Project(ZTranslatedCube)
@@ -125,10 +128,14 @@ class Cube(object):
         # for plane in Planes:
         #     plane.draw()
 
-    def update(self):
-        for i in range(3):
-            self.rotation[i] += 0.01
-
+    def update(self, RotationAngle, axis):
+        Coordinates = self.to_numpy()
+        RotatedCube = rotate(Coordinates, RotationAngle, axis)
+        self.points = self.from_numpy(RotatedCube)
+        self.center = self.points[-1]
 
     def GetLayers(self):
         pass
+
+    def __repr__(self):
+        print(self.center)
