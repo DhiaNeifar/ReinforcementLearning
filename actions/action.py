@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Author: Dhia Neifar <neifar@umich.edu>
+
 import numpy as np
 
 # from rubikcube import RubikCube

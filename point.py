@@ -1,7 +1,13 @@
+# point.py
+
+# -*- coding: utf-8 -*-
+# Author: Dhia Neifar <neifar@umich.edu>
+
+
 import numpy as np
 import pygame
 
-from colors import Color
+from enums.colors import Color
 
 
 class Point3d(object):

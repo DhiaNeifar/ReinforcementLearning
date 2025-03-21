@@ -1,7 +1,12 @@
-import numpy as np
-from scipy.spatial.transform import Rotation as R
+# config.py
 
-from colors import Color
+# -*- coding: utf-8 -*-
+# Author: Dhia Neifar <neifar@umich.edu>
+
+
+import numpy as np
+
+from enums.colors import Color
 
 HEIGHT, WIDTH = 960, 1280
 FPS = 120
@@ -28,19 +33,16 @@ def Translate(Matrix: np.ndarray, Tx: float, Ty: float, Tz: float) -> np.ndarray
     :param Tx: Translate x-axis by Tx.
     :param Ty: Translate y-axis by Ty.
     :param Tz: Translate z-axis by Tz.
+
     :return: Matrix translated.
     """
 
     TranslationMatrix = np.array([
-        [1,     0,      0,      0],
-        [0,     1,      0,      0],
-        [0,     0,      1,      0],
-        [0,     0,      0,      1]
+        [1,       0,       0,      0],
+        [0,       1,       0,      0],
+        [0,       0,       1,      0],
+        [Tx,     Ty,      Tz,      1]
     ], dtype=np.float16)
-
-    TranslationMatrix[3, 0] = Tx
-    TranslationMatrix[3, 1] = Ty
-    TranslationMatrix[3, 2] = Tz
 
     return Matrix @ TranslationMatrix
 
@@ -97,8 +99,7 @@ def rotate(Matrix: np.ndarray, angle: float, axis):
         ])
         return Matrix @ ZRotationMatrix
 
-def Rotate(Matrix: np.ndarray, alpha, beta, gamma, RotationOrder):
-    # return Matrix @ np.array(R_new.as_matrix())
+def Rotate(Matrix: np.ndarray, alpha: float, beta: float, gamma:float):
     XRotationMatrix = np.array([
         [1,                 0,                   0],
         [0,     np.cos(alpha),      -np.sin(alpha)],
@@ -117,15 +118,6 @@ def Rotate(Matrix: np.ndarray, alpha, beta, gamma, RotationOrder):
         [0,                               0,    1],
     ])
     return Matrix @ XRotationMatrix @ YRotationMatrix @ ZRotationMatrix
-    # print(RotationOrder)
-    for order in RotationOrder:
-        if order == 0:
-            Matrix = Matrix @ XRotationMatrix
-        if order == 1:
-            Matrix = Matrix @ YRotationMatrix
-        if order == 2:
-            Matrix = Matrix @ ZRotationMatrix
-    return Matrix
 
 def Pad(Matrix: np.ndarray) -> np.ndarray:
     shape = Matrix.shape

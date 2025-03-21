@@ -1,26 +1,25 @@
-import numpy as np
+# main.py
 
-from colors import Color
+# -*- coding: utf-8 -*-
+# Author: Dhia Neifar <neifar@umich.edu>
+
+
 from config import HEIGHT, WIDTH, FPS
-from game import GameManager
-from referential import Referential
+from enums.colors import Color
+from game_manager import GameManager
 from rubikcube import RubikCube
+from cube import Cube
 
 
 def main() -> None:
-    game_caption = 'cube'
+    game_caption = "rubik's cube"
 
     game_manager = GameManager(game_caption, height=HEIGHT, width=WIDTH, fps=FPS, BackgroundColor=Color.BEIGE.value)
     game_surface = game_manager.surface
 
     RCube = RubikCube(game_surface)
-    # for cube in RCube.cubes[::3]:
-    #     cube.rotation[2] -= np.pi * 0.5
-    # cube.draw()
-    referential = Referential(game_surface)
     game_manager.AddObjects([
         RCube,
-        # referential,
     ])
     game_manager.run()
 

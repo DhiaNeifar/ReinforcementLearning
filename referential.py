@@ -1,8 +1,14 @@
+# referential.py
+
+# -*- coding: utf-8 -*-
+# Author: Dhia Neifar <neifar@umich.edu>
+
+
 import pygame
 import numpy as np
 
 from point import Point3d
-from colors import Color
+from enums.colors import Color
 from config import Translate, Project, Scale, Rotate, Pad
 
 

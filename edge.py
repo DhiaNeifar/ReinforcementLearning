@@ -1,7 +1,13 @@
+# edge.py
+
+# -*- coding: utf-8 -*-
+# Author: Dhia Neifar <neifar@umich.edu>
+
+
 import pygame
 
 from point import Point3d
-from colors import Color
+from enums.colors import Color
 
 
 
