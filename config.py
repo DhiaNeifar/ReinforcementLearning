@@ -19,12 +19,22 @@ FieldOfViewRad = 1 / np.tan(FieldOfView)
 Z_near, Z_far = 0.1, 1000
 Lambda = Z_far / (Z_far - Z_near)
 
-ProjectionMatrix = np.array([
-    [AspectRatio * FieldOfView,             0,                     0,           0],
-    [                        0,   FieldOfView,                     0,           0],
-    [                        0,             0,                Lambda,           1],
-    [                        0,             0,      -Lambda * Z_near,           0]
-], dtype=np.float16)
+
+FRONT  = {"Vertices": [0, 1, 2, 3], "Edges": [0, 3, 6, 9],   "Color": Color.YELLOW.value}
+RIGHT  = {"Vertices": [1, 5, 6, 2], "Edges": [5, 4, 8, 3],   "Color": Color.RED.value}
+BACK   = {"Vertices": [5, 4, 7, 6], "Edges": [1, 10, 7, 4],  "Color": Color.WHITE.value}
+LEFT   = {"Vertices": [4, 0, 3, 7], "Edges": [2, 9, 11, 10], "Color": Color.ORANGE.value}
+UP     = {"Vertices": [4, 5, 1, 0], "Edges": [1, 5, 0, 2],   "Color": Color.GREEN.value}
+DOWN   = {"Vertices": [3, 2, 6, 7], "Edges": [6, 8, 7, 11],  "Color": Color.BLUE.value}
+
+LAYERS = [FRONT, RIGHT, BACK, LEFT, UP, DOWN]
+
+layers = {"FRONT": 0, "RIGHT": 1, "BACK": 2, "LEFT": 3, "UP": 4, "DOWN": 5,}
+
+Axes = {"X axis": 0, "Y axis": 1, "Z axis": 2}
+
+
+
 
 def Translate(Matrix: np.ndarray, Tx: float, Ty: float, Tz: float) -> np.ndarray:
     """
@@ -54,6 +64,13 @@ def Project(Matrix: np.ndarray) -> np.ndarray:
     :return: Matrix projected.
     """
 
+    ProjectionMatrix = np.array([
+        [AspectRatio * FieldOfView,             0,                     0,           0],
+        [                        0,   FieldOfView,                     0,           0],
+        [                        0,             0,                Lambda,           1],
+        [                        0,             0,      -Lambda * Z_near,           0]
+    ], dtype=np.float16)
+
     Matrix = Matrix @ ProjectionMatrix
     mask = Matrix[:, 3] != 0
     Matrix[mask, :] /= Matrix[mask, 3, np.newaxis]
@@ -76,7 +93,18 @@ def Scale(Matrix: np.ndarray) -> np.ndarray:
 
     return Matrix.astype(np.float64)
 
-def rotate(Matrix: np.ndarray, angle: float, axis):
+def LocalRotate(Matrix: np.ndarray, angle: float, axis) -> np.ndarray:
+    """
+    Function for Local Rotation.
+    Applied to the cube when an event is triggered like F or R'.
+
+    :param Matrix: Coordinates of the vertices of the cube.
+    :param angle: Angle used for rotation.
+    :param axis: Following axis (X X Axis, Y Axis, Z Axis)
+
+    :return: New coordinates of the vertices of the cube after applying local rotation.
+    """
+
     if Axes[axis] == Axes["X axis"]:
         XRotationMatrix = np.array([
             [1, 0, 0],
@@ -99,7 +127,19 @@ def rotate(Matrix: np.ndarray, angle: float, axis):
         ])
         return Matrix @ ZRotationMatrix
 
-def Rotate(Matrix: np.ndarray, alpha: float, beta: float, gamma:float):
+def GlobalRotation(Matrix: np.ndarray, alpha: float, beta: float, gamma:float) -> np.ndarray:
+    """
+    Function for Global Rotation.
+    Applied to all the points assigned to an object. The function used for rotating an object for 3d rendering.
+
+    :param Matrix: Coordinates of the points assigned to an object.
+    :param alpha: Angle to rotate along X Axis
+    :param beta: Angle to rotate along Y Axis
+    :param gamma: Angle to rotate along Z Axis
+
+    :return: New coordinates of the points of the object after applying global rotation.
+    """
+
     XRotationMatrix = np.array([
         [1,                 0,                   0],
         [0,     np.cos(alpha),      -np.sin(alpha)],
@@ -120,58 +160,11 @@ def Rotate(Matrix: np.ndarray, alpha: float, beta: float, gamma:float):
     return Matrix @ XRotationMatrix @ YRotationMatrix @ ZRotationMatrix
 
 def Pad(Matrix: np.ndarray) -> np.ndarray:
+    """
+    Function for Padding. Add a column of ones at the end.
+
+    :param Matrix:  Matrix to pad.
+    :return: Padded Matrix.
+    """
     shape = Matrix.shape
     return np.concatenate((Matrix, np.ones((shape[0], 1))), axis=1)
-
-
-
-FRONT = {
-    "Vertices": [0, 1, 2, 3],
-    "Edges": (0, 3, 6, 9),
-    "Color": Color.YELLOW.value
-}
-
-RIGHT = {
-    "Vertices": [1, 5, 6, 2],
-    "Edges": [5, 4, 8, 3],
-    "Color": Color.RED.value
-}
-
-BACK = {
-    "Vertices": [5, 4, 7, 6],
-    "Edges": [1, 10, 7, 4],
-    "Color": Color.WHITE.value
-}
-
-LEFT = {
-    "Vertices": [4, 0, 3, 7],
-    "Edges": [2, 9, 11, 10],
-    "Color": Color.ORANGE.value
-}
-
-UP = {
-    "Vertices": [4, 5, 1, 0],
-    "Edges": [1, 5, 0, 2],
-    "Color": Color.GREEN.value
-}
-
-DOWN = {
-    "Vertices": [3, 2, 6, 7],
-    "Edges": [6, 8, 7, 11],
-    "Color": Color.BLUE.value
-}
-layers = {
-    "FRONT": 0,
-    "RIGHT": 1,
-    "BACK": 2,
-    "LEFT": 3,
-    "UP": 4,
-    "DOWN": 5,
-}
-LAYERS = [FRONT, RIGHT, BACK, LEFT, UP, DOWN]
-
-Axes = {
-    "X axis": 0,
-    "Y axis": 1,
-    "Z axis": 2,
-}

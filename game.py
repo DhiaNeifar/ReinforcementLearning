@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 
 
-from config import Translate, Project, Scale, Rotate, Pad
+from config import Translate, Project, Scale, GlobalRotation, Pad
 
 
 class Game(object):
@@ -29,7 +29,7 @@ class Game(object):
         """
 
         Coordinates = self.to_numpy()
-        Rotated = Rotate(Coordinates, *self.GlobalRotation)
+        Rotated = GlobalRotation(Coordinates, *self.GlobalRotation)
         Padded = Pad(Rotated)
         ZTranslated = Translate(Padded, Tx=0.0, Ty=0.0, Tz=tz)
         Projected = Project(ZTranslated)

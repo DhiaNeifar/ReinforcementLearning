@@ -12,7 +12,7 @@ from enums.colors import Color
 from point import Point3d
 from edge import Edge
 from plane import Plane
-from config import Translate, Project, Scale, Rotate, Pad, LAYERS, rotate
+from config import LocalRotate, LAYERS
 
 
 class Cube(Game):
@@ -173,7 +173,7 @@ class Cube(Game):
 
     def LocalUpdate(self, RotationAngle, axis):
         Coordinates = self.to_numpy()
-        RotatedCube = rotate(Coordinates, RotationAngle, axis)
+        RotatedCube = LocalRotate(Coordinates, RotationAngle, axis)
         self.vertices = self.from_numpy(RotatedCube)
         self.center = self.vertices[-1]
 
