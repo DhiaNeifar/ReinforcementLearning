@@ -2,7 +2,7 @@ from actions.action import Action
 from config import layers
 
 
-class RotateRight(Action):
+class RotateDown(Action):
     def __init__(self, clockwise=True):
         super().__init__()
         self.clockwise = clockwise

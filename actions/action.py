@@ -19,7 +19,7 @@ class Action(object):
           - If clockwise=False, do a 90° CCW rotation.
         """
         if clockwise:
-            cube.state[face] = np.rot90(cube.state[face], k=3)  # 90° clockwise
+            cube.state[face] = np.rot90(cube.state[face], k=-1)  # 90° clockwise
         else:
             cube.state[face] = np.rot90(cube.state[face], k=1)  # 90° counterclockwise
 

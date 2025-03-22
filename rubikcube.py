@@ -12,6 +12,12 @@ from game import Game
 from cube import Cube
 from point import Point3d
 from config import FPS
+from actions.front import RotateFront
+from actions.right import RotateRight
+from actions.back import RotateBack
+from actions.left import RotateLeft
+from actions.up import RotateUp
+from actions.down import RotateDown
 
 
 class RubikCube(Game):
@@ -103,15 +109,33 @@ class RubikCube(Game):
 
         :return: None
         """
-
         if key in [pygame.K_f, pygame.K_g, pygame.K_r, pygame.K_e, pygame.K_b, pygame.K_v, pygame.K_l, pygame.K_k, pygame.K_u, pygame.K_y, pygame.K_d, pygame.K_s,]:
             self.actions.append(key)
             self.counter.append(self.RotationSpeed)
+        if key == pygame.K_f or key == pygame.K_g:
+            key = 0.5 - (key - pygame.K_f) / (pygame.K_g - pygame.K_f)
+            RotateFront(clockwise=key < 0).ApplyRotation(self)
 
-    # def Rotate(self, action):
-    #     action.ApplyRotation(self)
+        if key == pygame.K_r or key == pygame.K_e:
+            key = 0.5 - (key - pygame.K_e) / (pygame.K_r - pygame.K_e)
+            RotateRight(clockwise=key < 0).ApplyRotation(self)
 
+        if key == pygame.K_b or key == pygame.K_v:
+            key = 0.5 - (key - pygame.K_b) / (pygame.K_v - pygame.K_b)
+            RotateBack(clockwise=key < 0).ApplyRotation(self)
 
+        if key == pygame.K_l or key == pygame.K_k:
+            key = 0.5 - (key - pygame.K_k) / (pygame.K_l - pygame.K_k)
+            RotateLeft(clockwise=key < 0).ApplyRotation(self)
+
+        if key == pygame.K_u or key == pygame.K_y:
+            key = 0.5 - (key - pygame.K_y) / (pygame.K_u - pygame.K_y)
+            RotateUp(clockwise=key < 0).ApplyRotation(self)
+
+        if key == pygame.K_d or key == pygame.K_s:
+            key = 0.5 - (key - pygame.K_d) / (pygame.K_s - pygame.K_d)
+            RotateDown(clockwise=key < 0).ApplyRotation(self)
+        print(self.state)
 
     def update(self) -> None:
         """
@@ -191,3 +215,6 @@ class RubikCube(Game):
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.y) == -1]
         if side == "DOWN":
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.y) == 1]
+
+    def Scramble(self):
+        pass
