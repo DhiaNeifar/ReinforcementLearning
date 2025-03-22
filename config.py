@@ -27,9 +27,9 @@ LEFT   = {"Vertices": [4, 0, 3, 7], "Edges": [2, 9, 11, 10], "Color": Color.ORAN
 UP     = {"Vertices": [4, 5, 1, 0], "Edges": [1, 5, 0, 2],   "Color": Color.GREEN.value}
 DOWN   = {"Vertices": [3, 2, 6, 7], "Edges": [6, 8, 7, 11],  "Color": Color.BLUE.value}
 
-LAYERS = [FRONT, RIGHT, BACK, LEFT, UP, DOWN]
+PLANES = [FRONT, RIGHT, BACK, LEFT, UP, DOWN]
 
-layers = {"FRONT": 0, "RIGHT": 1, "BACK": 2, "LEFT": 3, "UP": 4, "DOWN": 5,}
+sides = {"FRONT": 0, "RIGHT": 1, "BACK": 2, "LEFT": 3, "UP": 4, "DOWN": 5, }
 
 Axes = {"X axis": 0, "Y axis": 1, "Z axis": 2}
 
@@ -105,21 +105,21 @@ def LocalRotate(Matrix: np.ndarray, angle: float, axis) -> np.ndarray:
     :return: New coordinates of the vertices of the cube after applying local rotation.
     """
 
-    if Axes[axis] == Axes["X axis"]:
+    if axis == Axes["X axis"]:
         XRotationMatrix = np.array([
             [1, 0, 0],
             [0, np.cos(angle), -np.sin(angle)],
             [0, np.sin(angle), np.cos(angle)],
         ])
         return Matrix @ XRotationMatrix
-    if Axes[axis] == Axes["Y axis"]:
+    if axis == Axes["Y axis"]:
         YRotationMatrix = np.array([
             [np.cos(angle), 0, np.sin(angle)],
             [0, 1, 0],
             [-np.sin(angle), 0, np.cos(angle)],
         ])
         return Matrix @ YRotationMatrix
-    if Axes[axis] == Axes["Z axis"]:
+    if axis == Axes["Z axis"]:
         ZRotationMatrix = np.array([
             [np.cos(angle), -np.sin(angle), 0],
             [np.sin(angle), np.cos(angle), 0],

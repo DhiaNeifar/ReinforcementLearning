@@ -12,7 +12,7 @@ from enums.colors import Color
 from point import Point3d
 from edge import Edge
 from plane import Plane
-from config import LocalRotate, LAYERS
+from config import LocalRotate, PLANES
 
 
 class Cube(Game):
@@ -149,7 +149,7 @@ class Cube(Game):
                       [Edges[i] for i in plane["Edges"]],
                       ZTranslatedCube[plane["Vertices"]],
                       self.surface,
-                      plane["Color"],) for plane in LAYERS]
+                      plane["Color"],) for plane in PLANES]
 
 
     def draw(self) -> None:

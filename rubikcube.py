@@ -11,7 +11,7 @@ from typing import List
 from game import Game
 from cube import Cube
 from point import Point3d
-from config import FPS
+from config import FPS, sides, Axes
 from actions.front import RotateFront
 from actions.right import RotateRight
 from actions.back import RotateBack
@@ -29,7 +29,7 @@ class RubikCube(Game):
         """
         super().__init__(surface)
         self.surface = surface
-        self.RotationSpeed = 0.2 * FPS # Multiply by 0.5 to double the speed!
+        self.RotationSpeed = 3 * FPS # Multiply by 0.5 to double the speed!
         self.RotationAngle = np.pi / self.RotationSpeed
         self.cubes = [
             Cube(self.surface, Point3d(x=-1.0, y=-1.0, z=-1.0), diameter=1),
@@ -65,6 +65,7 @@ class RubikCube(Game):
         self.state = self.InitialState()
         self.actions = []
         self.counter = []
+        self.scrambling = False
 
 
     def draw(self) -> None:
@@ -105,37 +106,54 @@ class RubikCube(Game):
         """
         Method needs to exist. This is passed along from Game Manager. Every game requires a KeyTrigger method
         to process the event (Key or mouse) triggered.
+        KeyPressed is a bool that checks if the key pressed is a key that would trigger an action. Pressing any other key would be ignored.
+
         :param key: A key triggering an event.
 
         :return: None
         """
-        if key in [pygame.K_f, pygame.K_g, pygame.K_r, pygame.K_e, pygame.K_b, pygame.K_v, pygame.K_l, pygame.K_k, pygame.K_u, pygame.K_y, pygame.K_d, pygame.K_s,]:
-            self.actions.append(key)
-            self.counter.append(self.RotationSpeed)
+
+        # Key p is for scrambling
+        if key == pygame.K_p:
+            self.scrambling = True
+            self.scramble()
+            return
+
+        KeyPressed = False
         if key == pygame.K_f or key == pygame.K_g:
-            key = 0.5 - (key - pygame.K_f) / (pygame.K_g - pygame.K_f)
-            RotateFront(clockwise=key < 0).ApplyRotation(self)
+            Clockwise = 0.5 - (key - pygame.K_f) / (pygame.K_g - pygame.K_f) < 0
+            RotateFront(clockwise=Clockwise).ApplyRotation(self)
+            KeyPressed = True
 
         if key == pygame.K_r or key == pygame.K_e:
-            key = 0.5 - (key - pygame.K_e) / (pygame.K_r - pygame.K_e)
-            RotateRight(clockwise=key < 0).ApplyRotation(self)
+            Clockwise = 0.5 - (key - pygame.K_e) / (pygame.K_r - pygame.K_e) < 0
+            RotateRight(clockwise=Clockwise).ApplyRotation(self)
+            KeyPressed = True
 
         if key == pygame.K_b or key == pygame.K_v:
-            key = 0.5 - (key - pygame.K_b) / (pygame.K_v - pygame.K_b)
-            RotateBack(clockwise=key < 0).ApplyRotation(self)
+            Clockwise = 0.5 - (key - pygame.K_b) / (pygame.K_v - pygame.K_b) < 0
+            RotateBack(clockwise=Clockwise).ApplyRotation(self)
+            KeyPressed = True
 
         if key == pygame.K_l or key == pygame.K_k:
-            key = 0.5 - (key - pygame.K_k) / (pygame.K_l - pygame.K_k)
-            RotateLeft(clockwise=key < 0).ApplyRotation(self)
+            Clockwise = 0.5 - (key - pygame.K_k) / (pygame.K_l - pygame.K_k) < 0
+            RotateLeft(clockwise=Clockwise).ApplyRotation(self)
+            KeyPressed = True
 
         if key == pygame.K_u or key == pygame.K_y:
-            key = 0.5 - (key - pygame.K_y) / (pygame.K_u - pygame.K_y)
-            RotateUp(clockwise=key < 0).ApplyRotation(self)
+            Clockwise = 0.5 - (key - pygame.K_y) / (pygame.K_u - pygame.K_y) < 0
+            RotateUp(clockwise=Clockwise).ApplyRotation(self)
+            KeyPressed = True
 
         if key == pygame.K_d or key == pygame.K_s:
-            key = 0.5 - (key - pygame.K_d) / (pygame.K_s - pygame.K_d)
-            RotateDown(clockwise=key < 0).ApplyRotation(self)
-        print(self.state)
+            Clockwise = 0.5 - (key - pygame.K_d) / (pygame.K_s - pygame.K_d) < 0
+            RotateDown(clockwise=Clockwise).ApplyRotation(self)
+            KeyPressed = True
+
+        if KeyPressed:
+            self.actions.append(key)
+            self.counter.append(self.RotationSpeed)
+
 
     def update(self) -> None:
         """
@@ -146,43 +164,49 @@ class RubikCube(Game):
 
         :return:
         """
+
         if self.actions:
             key = self.actions[0]
+
+            if key == pygame.K_p:
+                self.actions = self.actions[1:]
+                self.scramble()
+
             if key == pygame.K_f or key == pygame.K_g:
                 key = 0.5 - (key - pygame.K_f) / (pygame.K_g - pygame.K_f)
-                FrontCubes = self.GetSideCubes("FRONT")
+                FrontCubes = self.GetSideCubes(sides["FRONT"])
                 for CubeIndex in FrontCubes:
-                    self.cubes[CubeIndex].LocalUpdate(-key * self.RotationAngle, "Z axis")
+                    self.cubes[CubeIndex].LocalUpdate(-key * self.RotationAngle, Axes["Z axis"])
 
             if key == pygame.K_r or key == pygame.K_e:
                 key = 0.5 - (key - pygame.K_e) / (pygame.K_r - pygame.K_e)
-                RightCubes = self.GetSideCubes("RIGHT")
+                RightCubes = self.GetSideCubes(sides["RIGHT"])
                 for CubeIndex in RightCubes:
-                    self.cubes[CubeIndex].LocalUpdate(-key * self.RotationAngle, "X axis")
+                    self.cubes[CubeIndex].LocalUpdate(-key * self.RotationAngle, Axes["X axis"])
 
             if key == pygame.K_b or key == pygame.K_v:
                 key = 0.5 - (key - pygame.K_b) / (pygame.K_v - pygame.K_b)
-                BackCubes = self.GetSideCubes("BACK")
+                BackCubes = self.GetSideCubes(sides["BACK"])
                 for CubeIndex in BackCubes:
-                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, "Z axis")
+                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, Axes["Z axis"])
 
             if key == pygame.K_l or key == pygame.K_k:
                 key = 0.5 - (key - pygame.K_k) / (pygame.K_l - pygame.K_k)
-                LeftCubes = self.GetSideCubes("LEFT")
+                LeftCubes = self.GetSideCubes(sides["LEFT"])
                 for CubeIndex in LeftCubes:
-                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, "X axis")
+                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, Axes["X axis"])
 
             if key == pygame.K_u or key == pygame.K_y:
                 key = 0.5 - (key - pygame.K_y) / (pygame.K_u - pygame.K_y)
-                UpCubes = self.GetSideCubes("UP")
+                UpCubes = self.GetSideCubes(sides["UP"])
                 for CubeIndex in UpCubes:
-                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, "Y axis")
+                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, Axes["Y axis"])
 
             if key == pygame.K_d or key == pygame.K_s:
                 key = 0.5 - (key - pygame.K_d) / (pygame.K_s - pygame.K_d)
-                DownCubes = self.GetSideCubes("DOWN")
+                DownCubes = self.GetSideCubes(sides["DOWN"])
                 for CubeIndex in DownCubes:
-                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, "Y axis")
+                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, Axes["Y axis"])
 
             # an action spans on two seconds in total, counter keeps track of how many times we need to update the cubes before the action is burned.
             self.counter[0] -= 1
@@ -203,18 +227,29 @@ class RubikCube(Game):
         :return: List[int: indices of the cubes of the side of the Rubik's Cube]
         """
 
-        if side == "FRONT":
+        if side == sides["FRONT"]:
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.z) == -1]
-        if side == "RIGHT":
+        if side == sides["RIGHT"]:
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.x) == 1]
-        if side == "BACK":
+        if side == sides["BACK"]:
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.z) == 1]
-        if side == "LEFT":
+        if side == sides["LEFT"]:
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.x) == -1]
-        if side == "UP":
+        if side == sides["UP"]:
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.y) == -1]
-        if side == "DOWN":
+        if side == sides["DOWN"]:
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.y) == 1]
 
-    def Scramble(self):
+    def scramble(self):
+        """"
+        Method that scrambles the Rubik's Cube randomly.
+        TODO: Parameters it should have:
+            :param: speed -> float: Speed of scrambling | Affects self.RotationSpeed
+            :param: NumberActions -> int: Number of random actions
+            :param: draw -> bool: if True, we draw the actions used to scramble the Rubik's Cube on canvas else ignore.
+        """
+        while self.actions:
+            self.update()
+        print("Starting to Scramble")
+        # cube.update
         pass
