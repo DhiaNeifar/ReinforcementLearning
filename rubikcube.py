@@ -140,25 +140,25 @@ class RubikCube(Game):
                 key = 0.5 - (key - pygame.K_b) / (pygame.K_v - pygame.K_b)
                 BackCubes = self.GetSideCubes("BACK")
                 for CubeIndex in BackCubes:
-                    self.cubes[CubeIndex].LocalUpdate(-key * self.RotationAngle, "Z axis")
+                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, "Z axis")
 
             if key == pygame.K_l or key == pygame.K_k:
                 key = 0.5 - (key - pygame.K_k) / (pygame.K_l - pygame.K_k)
                 LeftCubes = self.GetSideCubes("LEFT")
                 for CubeIndex in LeftCubes:
-                    self.cubes[CubeIndex].LocalUpdate(-key * self.RotationAngle, "X axis")
+                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, "X axis")
 
             if key == pygame.K_u or key == pygame.K_y:
                 key = 0.5 - (key - pygame.K_y) / (pygame.K_u - pygame.K_y)
                 UpCubes = self.GetSideCubes("UP")
                 for CubeIndex in UpCubes:
-                    self.cubes[CubeIndex].LocalUpdate(-key * self.RotationAngle, "Y axis")
+                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, "Y axis")
 
             if key == pygame.K_d or key == pygame.K_s:
                 key = 0.5 - (key - pygame.K_d) / (pygame.K_s - pygame.K_d)
                 DownCubes = self.GetSideCubes("DOWN")
                 for CubeIndex in DownCubes:
-                    self.cubes[CubeIndex].LocalUpdate(-key * self.RotationAngle, "Y axis")
+                    self.cubes[CubeIndex].LocalUpdate(key * self.RotationAngle, "Y axis")
 
             # an action spans on two seconds in total, counter keeps track of how many times we need to update the cubes before the action is burned.
             self.counter[0] -= 1

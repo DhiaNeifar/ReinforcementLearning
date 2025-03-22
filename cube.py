@@ -164,7 +164,7 @@ class Cube(Game):
         for plane in Planes:
             plane.draw()
 
-    def update(self, yaw=0.005, pitch=0.005, roll=0.005):
+    def update(self, yaw=0.0001, pitch=0.0001, roll=0.0001):
         self.GlobalRotation[0] +=  yaw
         self.GlobalRotation[1] += pitch
         self.GlobalRotation[2] += roll
