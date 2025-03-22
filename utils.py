@@ -1,6 +1,8 @@
 import random
+import pygame
 
 import numpy as np
+from rubikcube import RubikCube
 
 
 class RubiksCube:
@@ -122,14 +124,20 @@ class RubiksCube:
         if clockwise:
             temp = self.state[0, 2, :].copy()
             self.state[0, 2, :] = self.state[3, 2, :].copy()
+
             self.state[3, 2, :] = self.state[2, 2, :].copy()
+
             self.state[2, 2, :] = self.state[1, 2, :].copy()
+
             self.state[1, 2, :] = temp
         else:
             temp = self.state[0, 2, :].copy()
             self.state[0, 2, :] = self.state[1, 2, :].copy()
+
             self.state[1, 2, :] = self.state[2, 2, :].copy()
+
             self.state[2, 2, :] = self.state[3, 2, :].copy()
+
             self.state[3, 2, :] = temp
 
     def move_B(self, clockwise=True):
@@ -183,32 +191,25 @@ class RubiksCube:
 
 # Example usage:
 if __name__ == '__main__':
+    pygame.init()
+    Rcube = RubikCube(pygame.display.set_mode((0, 0)))
+    Rcube.InitializeRubikCube()
+
+
     cube = RubiksCube()
-    print("Initial state:")
-    print(cube)
 
-    # Perform a sequence of moves:
-    #         Works     |  Works     |  Works     |  Works     |  Works     |  Works
-    # moves = [('F', True), ('R', True), ('U', True), ('B', True), ('L', True), ('D', False)]
+    message = "B D L U' F' U F' L' B' D R B U' L' U' B' B R' F U' U U U' U' U R B' R D R R' F F D L' D F' B' R' B B R' L D D' F D' L' B' U'"
+    message = message.split(' ')
+    moves = [(move[0], True) if len(move) == 1 else (move[0], False) for move in message]
+    face_names = ['F', 'R', 'B', 'L', 'U', 'D']
+    for ind, (move, cw) in enumerate(moves):
+        cube.execute_move(move, clockwise=cw)
+        Rcube.AlterState(face_names.index(move), int(cw))
+        if not np.all(cube.state == Rcube.state):
+            print("not working")
+            break
 
-    #         Works     |  Works       |  Works      |  Works      |  Works     |   Works
-    # actions = ['F', 'R', 'B', 'L', 'U', 'D']
-    # moves = [(random.choice(actions), random.choice([True, False])) for _ in range(50)]
-    X = ([('U', False), ('L', True), ('D', True), ('U', False), ('R', True), ], # works
-         [('F', False), ('U', True), ('B', True), ('F', True), ('U', True), ], # Works
-         [('B', False), ('R', True), ('B', True), ('L', True), ('B', False), ], # works
-         [('U', True), ('L', False), ('R', True), ('U', True), ('B', False), ], # Works
-         [('L', False), ('R', False), ('R', False), ('F', True), ('F', True), ], # Works
-         [('F', True), ('B', True), ('F', True), ('L', True), ('U', False), ], # Works
-         [('U', True), ('B', True), ('F', False), ('L', True), ('D', True), ], # Works
-         [('L', False), ('F', True), ('B', True), ('B', True), ('B', True), ], # Works
-         [('L', False), ('B', False), ('U', True), ('D', True), ('R', True), ], # Works
-         [('L', False), ('R', False), ('U', True), ('U', True), ('B', True)]), # Works
-    for x in X:
-        for move, cw in x:
-            cube.execute_move(move, clockwise=cw)
-            print(f"""After move {move}{'' if cw else "'"}:""")
-        print(cube)
+
 
 
 

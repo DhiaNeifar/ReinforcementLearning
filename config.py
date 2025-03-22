@@ -9,7 +9,7 @@ import numpy as np
 from enums.colors import Color
 
 HEIGHT, WIDTH = 960, 1280
-FPS = 120
+FPS = 60
 AspectRatio = HEIGHT / WIDTH
 
 theta = np.pi * 0.5

@@ -38,7 +38,7 @@ class Cube(Game):
         self.diameter = diameter
         self.surface = surface
         self.vertices = self.GetPoints()
-        self.GlobalRotation = [np.pi * 0.0, np.pi * 0.0, np.pi * 0.0]
+        self.GlobalRotation = [np.pi * 0.1, np.pi * 0.1, np.pi * 0.1]
         self.VerticesColor = VerticesColor
         self.EdgesColor = EdgesColor
         self.draw_ = draw_
@@ -164,7 +164,7 @@ class Cube(Game):
         for plane in Planes:
             plane.draw()
 
-    def update(self, yaw=0.0001, pitch=0.0001, roll=0.0001):
+    def update(self, yaw=0.000, pitch=0.000, roll=0.000):
         self.GlobalRotation[0] +=  yaw
         self.GlobalRotation[1] += pitch
         self.GlobalRotation[2] += roll
