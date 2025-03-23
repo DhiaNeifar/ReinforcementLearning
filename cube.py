@@ -38,7 +38,7 @@ class Cube(Game):
         self.diameter = diameter
         self.surface = surface
         self.vertices = self.GetPoints()
-        self.GlobalRotation = [np.pi * 0.1, np.pi * 0.1, np.pi * 0.1]
+        self.GlobalRotation = [np.pi * 0.0, np.pi * 0.0, np.pi * 0.0]
         self.VerticesColor = VerticesColor
         self.EdgesColor = EdgesColor
         self.draw_ = draw_

@@ -15,24 +15,23 @@ class RotateDown(Action):
         temp = Rcube.state[sides["FRONT"], 2, :].copy()
 
         if self.clockwise:
-            # For a clockwise R move:
-            # UP right column becomes the FRONT right column.
-            Rcube.state[sides["FRONT"], 2, :] = Rcube.state[sides["LEFT"], 2, :].copy()
-            # FRONT right column becomes the DOWN right column.
-            Rcube.state[sides["LEFT"], 2, :] = Rcube.state[sides["BACK"], 2, :].copy()
-            # DOWN right column becomes the reversed BACK left column.
-            Rcube.state[sides["BACK"], 2, :] = Rcube.state[sides["RIGHT"], 2, :].copy()
-            # BACK left column becomes the reversed saved UP right column.
-            Rcube.state[sides["RIGHT"], 2, :] = temp
-        else:
             # For a counterclockwise R move:
             # UP right column gets the reversed BACK left column.
-            Rcube.state[sides["FRONT"], 2, :] = Rcube.state[sides["RIGHT"], 2, :].copy()
+            Rcube.state[sides["FRONT"], 2, :] = Rcube.state[sides["LEFT"], 2, :].copy()
             # BACK left column gets the reversed DOWN right column.
-            Rcube.state[sides["RIGHT"], 2, :] = Rcube.state[sides["BACK"], 2, :].copy()
+            Rcube.state[sides["LEFT"], 2, :] = Rcube.state[sides["BACK"], 2, :].copy()
             # DOWN right column becomes the FRONT right column.
-            Rcube.state[sides["BACK"], 2, :] = Rcube.state[sides["LEFT"], 2, :].copy()
+            Rcube.state[sides["BACK"], 2, :] = Rcube.state[sides["RIGHT"], 2, :].copy()
             # FRONT right column gets the saved UP right column.
+            Rcube.state[sides["RIGHT"], 2, :] = temp
+        else:
+            # For a clockwise R move:
+            # UP right column becomes the FRONT right column.
+            Rcube.state[sides["FRONT"], 2, :] = Rcube.state[sides["RIGHT"], 2, :].copy()
+            # FRONT right column becomes the DOWN right column.
+            Rcube.state[sides["RIGHT"], 2, :] = Rcube.state[sides["BACK"], 2, :].copy()
+            # DOWN right column becomes the reversed BACK left column.
+            Rcube.state[sides["BACK"], 2, :] = Rcube.state[sides["LEFT"], 2, :].copy()
+            # BACK left column becomes the reversed saved UP right column.
             Rcube.state[sides["LEFT"], 2, :] = temp
-
         return Rcube

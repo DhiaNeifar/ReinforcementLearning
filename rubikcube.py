@@ -30,7 +30,7 @@ class RubikCube(Game):
         """
         super().__init__(surface)
         self.surface = surface
-        self.RotationSpeed = 2 * FPS # Multiply by 0.5 to double the speed!
+        self.RotationSpeed = 0.1 * FPS # Multiply by 0.5 to double the speed!
         self.RotationAngle = np.pi / self.RotationSpeed
         self.scrambling = False
 
@@ -127,6 +127,18 @@ class RubikCube(Game):
         :return: None
         """
 
+        # Key UP/DOWN are used to rotate the cube along the X axis
+        if key == pygame.K_UP or key == pygame.K_DOWN:
+            for cube in self.cubes:
+                cube.GlobalRotation[Axes["X axis"]] += (0.5 - (key - pygame.K_DOWN) /
+                                                        (pygame.K_UP - pygame.K_DOWN)) * np.pi
+
+        # Key RIGHT/LEFT are used to rotate the cube along the Y axis
+        if key == pygame.K_RIGHT or key == pygame.K_LEFT:
+            for cube in self.cubes:
+                cube.GlobalRotation[Axes["Y axis"]] += (0.5 - (key - pygame.K_LEFT) /
+                                                        (pygame.K_RIGHT - pygame.K_LEFT)) * np.pi
+
         # Key p is for scrambling
         if key == pygame.K_p:
             self.scrambling = True
@@ -135,7 +147,7 @@ class RubikCube(Game):
 
         KeyPressed = False
         if key == pygame.K_f or key == pygame.K_g:
-            clockwise = 0.5 - (key - pygame.K_f) / (pygame.K_g - pygame.K_f) < 0
+            clockwise = 0.5 - (key - pygame.K_f) / (pygame.K_g - pygame.K_f) > 0
             RotateFront(clockwise=clockwise).ApplyRotation(self)
             KeyPressed = True
 
@@ -145,7 +157,7 @@ class RubikCube(Game):
             KeyPressed = True
 
         if key == pygame.K_b or key == pygame.K_v:
-            clockwise = 0.5 - (key - pygame.K_b) / (pygame.K_v - pygame.K_b) < 0
+            clockwise = 0.5 - (key - pygame.K_b) / (pygame.K_v - pygame.K_b) > 0
             RotateBack(clockwise=clockwise).ApplyRotation(self)
             KeyPressed = True
 
@@ -160,14 +172,14 @@ class RubikCube(Game):
             KeyPressed = True
 
         if key == pygame.K_d or key == pygame.K_s:
-            clockwise = 0.5 - (key - pygame.K_d) / (pygame.K_s - pygame.K_d) < 0
+            clockwise = 0.5 - (key - pygame.K_d) / (pygame.K_s - pygame.K_d) > 0
             RotateDown(clockwise=clockwise).ApplyRotation(self)
             KeyPressed = True
 
         if KeyPressed:
             self.actions.append(key)
             self.counter.append(self.RotationSpeed)
-
+            print(self.state)
 
     def update(self) -> None:
         """
@@ -249,7 +261,7 @@ class RubikCube(Game):
         if side == sides["DOWN"]:
             return [CubeIndex for (CubeIndex, cube) in enumerate(self.cubes) if round(cube.center.y) == 1]
 
-    def AlterState(self, action, clockwise, ):
+    def AlterState(self, action, clockwise):
         key = None
         action_str = None
         if action == sides["FRONT"]:
@@ -273,7 +285,7 @@ class RubikCube(Game):
             RotateLeft(clockwise=clockwise).ApplyRotation(self)
 
         if action == sides["UP"]:
-            key = clockwise * (pygame.K_y - pygame.K_u) + pygame.K_u
+            key = clockwise * (pygame.K_u - pygame.K_y) + pygame.K_y
             action_str = f"""U{"" if clockwise else "'"}"""
             RotateUp(clockwise=clockwise).ApplyRotation(self)
 
@@ -294,18 +306,47 @@ class RubikCube(Game):
         self.InitializeRubikCube()
         print("Starting to Scramble")
 
-        NumberActions = 50
+        NumberActions = 500
         Actions = list(sides.values())
+        # Actions = [0, 1, 2]
         message = []
         for _ in range(NumberActions):
             action = random.choice(Actions)
             clockwise = random.choice([0, 1])
             key, action_str = self.AlterState(action, clockwise)
+            if key == pygame.K_f:
+                print("F")
+            if key == pygame.K_g:
+                print("F'")
+            if key == pygame.K_r:
+                print("R")
+            if key == pygame.K_e:
+                print("R'")
+            if key == pygame.K_b:
+                print("B")
+            if key == pygame.K_v:
+                print("B'")
+            if key == pygame.K_l:
+                print("L")
+            if key == pygame.K_k:
+                print("L'")
+            if key == pygame.K_u:
+                print("U")
+            if key == pygame.K_y:
+                print("U'")
+            if key == pygame.K_d:
+                print("D")
+            if key == pygame.K_s:
+                print("D'")
+
             message.append(action_str)
             self.actions.append(key)
             self.counter.append(self.RotationSpeed)
-
+        print(len(self.actions))
         message = " ".join(message)
         print(message)
         print(self.state)
         self.message = message
+
+        # B B B' F B
+        # R' R' R B' F'

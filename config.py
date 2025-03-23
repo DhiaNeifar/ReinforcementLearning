@@ -8,7 +8,7 @@ import numpy as np
 
 from enums.colors import Color
 
-HEIGHT, WIDTH = 960, 1280
+HEIGHT, WIDTH = 480, 640
 FPS = 60
 AspectRatio = HEIGHT / WIDTH
 
