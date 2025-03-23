@@ -30,7 +30,7 @@ class RubikCube(Game):
         """
         super().__init__(surface)
         self.surface = surface
-        self.RotationSpeed = 0.2 * FPS # Multiply by 0.5 to double the speed!
+        self.RotationSpeed = 2 * FPS # Multiply by 0.5 to double the speed!
         self.RotationAngle = np.pi / self.RotationSpeed
         self.scrambling = False
 
@@ -307,4 +307,5 @@ class RubikCube(Game):
 
         message = " ".join(message)
         print(message)
+        print(self.state)
         self.message = message

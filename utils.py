@@ -198,16 +198,18 @@ if __name__ == '__main__':
 
     cube = RubiksCube()
 
-    message = "B D L U' F' U F' L' B' D R B U' L' U' B' B R' F U' U U U' U' U R B' R D R R' F F D L' D F' B' R' B B R' L D D' F D' L' B' U'"
-    message = message.split(' ')
+    message = "L' R D U' B U' U U D L' L D L U' F' F' R' B U' R R D U U' D R U F U F R U U F L D L' D R' U' F' F D D F' F B R' R' F'"
+    message = message.split(' ')[:15]
+    print(" ".join(message))
     moves = [(move[0], True) if len(move) == 1 else (move[0], False) for move in message]
     face_names = ['F', 'R', 'B', 'L', 'U', 'D']
     for ind, (move, cw) in enumerate(moves):
         cube.execute_move(move, clockwise=cw)
         Rcube.AlterState(face_names.index(move), int(cw))
-        if not np.all(cube.state == Rcube.state):
-            print("not working")
-            break
+    print(cube.state)
+        # if not np.all(cube.state == Rcube.state):
+        #     print("not working")
+        #     break
 
 
 
