@@ -308,7 +308,6 @@ class RubikCube(Game):
 
         NumberActions = 500
         Actions = list(sides.values())
-        # Actions = [0, 1, 2]
         message = []
         for _ in range(NumberActions):
             action = random.choice(Actions)
