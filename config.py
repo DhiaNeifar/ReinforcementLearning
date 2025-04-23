@@ -8,12 +8,12 @@ import numpy as np
 
 from enums.colors import Color
 
-HEIGHT, WIDTH = 480, 640
+HEIGHT, WIDTH = 960, 1280
 FPS = 60
 AspectRatio = HEIGHT / WIDTH
 
 theta = np.pi * 0.5
-FieldOfView = theta * 0.5
+FieldOfView = theta * 1
 FieldOfViewRad = 1 / np.tan(FieldOfView)
 
 Z_near, Z_far = 0.1, 1000

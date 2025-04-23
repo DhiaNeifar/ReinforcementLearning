@@ -28,6 +28,7 @@ class RubikCube(Game):
         A Rubik's Cube is designed as a combination of 27 cubes.
         :param surface: It is the canvas used to draw objects on. surface is passed down from Game Manager. Type: pygame.Surface
         """
+
         super().__init__(surface)
         self.surface = surface
         self.RotationSpeed = 0.1 * FPS # Multiply by 0.5 to double the speed!
@@ -131,13 +132,13 @@ class RubikCube(Game):
         if key == pygame.K_UP or key == pygame.K_DOWN:
             for cube in self.cubes:
                 cube.GlobalRotation[Axes["X axis"]] += (0.5 - (key - pygame.K_DOWN) /
-                                                        (pygame.K_UP - pygame.K_DOWN)) * np.pi
+                                                        (pygame.K_UP - pygame.K_DOWN)) * 0.5 * np.pi
 
         # Key RIGHT/LEFT are used to rotate the cube along the Y axis
         if key == pygame.K_RIGHT or key == pygame.K_LEFT:
             for cube in self.cubes:
                 cube.GlobalRotation[Axes["Y axis"]] += (0.5 - (key - pygame.K_LEFT) /
-                                                        (pygame.K_RIGHT - pygame.K_LEFT)) * np.pi
+                                                        (pygame.K_RIGHT - pygame.K_LEFT)) * 0.5 * np.pi
 
         # Key p is for scrambling
         if key == pygame.K_p:
@@ -179,7 +180,6 @@ class RubikCube(Game):
         if KeyPressed:
             self.actions.append(key)
             self.counter.append(self.RotationSpeed)
-            print(self.state)
 
     def update(self) -> None:
         """
@@ -238,7 +238,7 @@ class RubikCube(Game):
 
         # Updating the global rotation of cubes
         for cube in self.cubes:
-            cube.update()
+            cube.update(yaw=0.005, pitch=0.005, roll=0.005)
 
     def GetSideCubes(self, side: str) -> List[int]:
         """
@@ -304,48 +304,16 @@ class RubikCube(Game):
             :param: draw -> bool: if True, we draw the actions used to scramble the Rubik's Cube on canvas else ignore.
         """
         self.InitializeRubikCube()
-        print("Starting to Scramble")
 
-        NumberActions = 500
+        NumberActions = 50
         Actions = list(sides.values())
         message = []
         for _ in range(NumberActions):
             action = random.choice(Actions)
             clockwise = random.choice([0, 1])
             key, action_str = self.AlterState(action, clockwise)
-            if key == pygame.K_f:
-                print("F")
-            if key == pygame.K_g:
-                print("F'")
-            if key == pygame.K_r:
-                print("R")
-            if key == pygame.K_e:
-                print("R'")
-            if key == pygame.K_b:
-                print("B")
-            if key == pygame.K_v:
-                print("B'")
-            if key == pygame.K_l:
-                print("L")
-            if key == pygame.K_k:
-                print("L'")
-            if key == pygame.K_u:
-                print("U")
-            if key == pygame.K_y:
-                print("U'")
-            if key == pygame.K_d:
-                print("D")
-            if key == pygame.K_s:
-                print("D'")
-
             message.append(action_str)
             self.actions.append(key)
             self.counter.append(self.RotationSpeed)
-        print(len(self.actions))
         message = " ".join(message)
-        print(message)
-        print(self.state)
         self.message = message
-
-        # B B B' F B
-        # R' R' R B' F'
