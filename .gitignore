@@ -1,6 +1,8 @@
 # Ignore everything
 *
 .idea/
+models/*
+runs/*
 
 # Don't ignore this .gitignore file
 !.gitignore
@@ -12,5 +14,6 @@
 !*.py
 !*.md
 !LICENSE
+!requirements.txt
 
 utils.py
