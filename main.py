@@ -21,12 +21,8 @@ def main() -> None:
     game_surface = game_manager.surface
 
     RCube = RubikCube(game_surface)
-    cube = Cube(game_surface, center=Point3d(2, 0, 0))
-    ref = Referential(game_surface)
     game_manager.AddObjects([
         RCube,
-        # cube,
-        # ref
     ])
     game_manager.run()
 
